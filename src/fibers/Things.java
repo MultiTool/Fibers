@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Things {
 
-  public static int ndims = 3;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
+  public static int ndims_init = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
   /* *************************************************************************************************** */
 
   public static class PointNd {
@@ -259,9 +259,9 @@ public class Things {
   public class PointNd_List extends ArrayList<PointNd> {
     /* test comment */
     public PointNd_List(int newsize) {
-      PointNd avg = new PointNd(ndims);
+      PointNd avg = new PointNd(ndims_init);
       for (int cnt = 0; cnt < newsize; cnt++) {
-        PointNd pnt = new PointNd(ndims);
+        PointNd pnt = new PointNd(ndims_init);
         pnt.Randomize(-1.0, 1.0);
         this.add(pnt);
       }
