@@ -247,13 +247,17 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
-  public static class CPoint {/* Control Point */
+  public static class CPoint extends PointNd {/* Control Point */
+    /* *************************************************************************************************** */
 
+    public CPoint(int num_dims) {
+      super(num_dims);
+    }
   }
   /* *************************************************************************************************** */
 
   public class PointNd_List extends ArrayList<PointNd> {
-
+    /* test comment */
     public PointNd_List(int newsize) {
       PointNd avg = new PointNd(ndims);
       for (int cnt = 0; cnt < newsize; cnt++) {
@@ -281,8 +285,6 @@ public class Things {
     }
   }/* PointNd_List */
   /* *************************************************************************************************** */
-
-
   public static class NodeBox {
   }
   /* *************************************************************************************************** */
