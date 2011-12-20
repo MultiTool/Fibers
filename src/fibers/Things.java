@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Things {
 
-  public static int ndims = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
+  public static int ndims = 3;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
   /* *************************************************************************************************** */
 
   public static class PointNd {
