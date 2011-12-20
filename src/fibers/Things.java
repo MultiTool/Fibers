@@ -4,13 +4,17 @@
  */
 package fibers;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author human
  */
 public class Things {
 
+  public static int ndims = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
   /* *************************************************************************************************** */
+
   public static class PointNd {
 
     public int ndims = 3;
@@ -84,6 +88,7 @@ public class Things {
       }
       return sumsq;
     }/* Magnitude_Squared */
+
 
     public void Get_Delta(PointNd other, int dimensions, PointNd pdelta) {
       pdelta.Clear();
@@ -173,6 +178,7 @@ public class Things {
       return flat;
     }
     /* *************************************************************************************************** */
+
     public void Get_Cross_Product(PointNd a, PointNd b) {
       this.Clear();
       this.loc[0] = (a.loc[1] * b.loc[2] - a.loc[2] * b.loc[1]);
@@ -210,12 +216,15 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
+
   public class PlaneNd extends PointNd {
     /* *************************************************************************************************** */
+
     public PlaneNd(int num_dims) {
       super(num_dims);
     }
     /* *************************************************************************************************** */
+
     public double Get_Height(PointNd pnt) {
       // get the height of this plane, at this point's coordinates
       double plane_hgt = this.loc[ninputs];// last dimension holds height offset
@@ -227,6 +236,7 @@ public class Things {
       return height;
     }
     /* *************************************************************************************************** */
+
     public void Plane_Ramp_To_Normal(PointNd norm) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
         norm.loc[dimcnt] = (-this.loc[dimcnt]);
@@ -236,16 +246,51 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
+
   public static class CPoint {/* Control Point */
 
   }
   /* *************************************************************************************************** */
+
+  public class PointNd_List extends ArrayList<PointNd> {
+
+    public PointNd_List(int newsize) {
+      PointNd avg = new PointNd(ndims);
+      for (int cnt = 0; cnt < newsize; cnt++) {
+        PointNd pnt = new PointNd(ndims);
+        pnt.Randomize(-1.0, 1.0);
+        this.add(pnt);
+      }
+      avg.Multiply(newsize);// experiment to move all the points to the centroid
+    }
+    /* *************************************************************************************************** */
+
+    public void Get_Average(PointNd ret_avg) {
+      ret_avg.Clear();
+      for (PointNd pnt : this) {
+        ret_avg.Add(pnt);
+      }
+      ret_avg.Multiply(1.0 / (double) this.size());
+    }
+    /* *************************************************************************************************** */
+
+    public void CheckNAN() {
+      for (PointNd pnt : this) {
+        pnt.CheckNAN();
+      }
+    }
+  }/* PointNd_List */
+  /* *************************************************************************************************** */
+
+
   public static class NodeBox {
   }
   /* *************************************************************************************************** */
+
   public static class Network {
   }
   /* *************************************************************************************************** */
+
   public static class Layers {
   }
 }
