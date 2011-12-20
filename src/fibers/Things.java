@@ -210,6 +210,32 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
+  public class PlaneNd extends PointNd {
+    /* *************************************************************************************************** */
+    public PlaneNd(int num_dims) {
+      super(num_dims);
+    }
+    /* *************************************************************************************************** */
+    public double Get_Height(PointNd pnt) {
+      // get the height of this plane, at this point's coordinates
+      double plane_hgt = this.loc[ninputs];// last dimension holds height offset
+      double height = 0.0;
+      for (int dim = 0; dim < ninputs; dim++) {
+        height += (pnt.loc[dim] * this.loc[dim]);// multiply each axis length by the slope for that axis
+      }
+      height += plane_hgt;// add in the base offset
+      return height;
+    }
+    /* *************************************************************************************************** */
+    public void Plane_Ramp_To_Normal(PointNd norm) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
+      for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
+        norm.loc[dimcnt] = (-this.loc[dimcnt]);
+      }
+      norm.loc[ninputs] = 1.0;// should return a normal above the plane
+      norm.Unitize();
+    }
+  }
+  /* *************************************************************************************************** */
   public static class CPoint {/* Control Point */
 
   }
