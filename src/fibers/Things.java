@@ -4,6 +4,7 @@
  */
 package fibers;
 
+import java.security.interfaces.DSAKey;
 import java.util.ArrayList;
 
 /**
@@ -250,18 +251,24 @@ public class Things {
   public static class CPoint extends PointNd {/* Control Point */
     /* *************************************************************************************************** */
 
+
+    public CPoint[] US, DS;
+
     public CPoint(int num_dims) {
       super(num_dims);
+      US = new CPoint[2];
+      DS = new CPoint[2];
     }
   }
   /* *************************************************************************************************** */
 
-  public class PointNd_List extends ArrayList<PointNd> {
+  public static class PointNd_List extends ArrayList<CPoint> {
     /* test comment */
+
     public PointNd_List(int newsize) {
       PointNd avg = new PointNd(ndims_init);
       for (int cnt = 0; cnt < newsize; cnt++) {
-        PointNd pnt = new PointNd(ndims_init);
+        CPoint pnt = new CPoint(ndims_init);
         pnt.Randomize(-1.0, 1.0);
         this.add(pnt);
       }
@@ -285,14 +292,51 @@ public class Things {
     }
   }/* PointNd_List */
   /* *************************************************************************************************** */
+
+
   public static class NodeBox {
+
+    public PointNd_List CPoints;
+    public int Num_Us, Num_Ds;
+
+    public NodeBox() {
+      Num_Us = Num_Ds = 0;
+      CPoints = new PointNd_List(0);
+    }
+
+    public void ConnectIn(NodeBox upstreamer) {
+      /*
+      go through all us cpoints, 
+       * 
+       */
+      int Num_CPoints = upstreamer.CPoints.size();
+      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+        CPoint us_cpnt = upstreamer.CPoints.get(pcnt);
+        CPoint my_cpnt = this.CPoints.get(pcnt);
+        us_cpnt.DS[upstreamer.Num_Ds] = my_cpnt;
+        my_cpnt.US[this.Num_Us] = us_cpnt;
+      }
+      this.Num_Us++;
+      upstreamer.Num_Ds++;
+    }
   }
   /* *************************************************************************************************** */
 
   public static class Network {
+
+    public ArrayList<NodeBox> Node_List;
+
+    public Network() {
+      Node_List = new ArrayList<NodeBox>();
+    }
   }
   /* *************************************************************************************************** */
 
   public static class Layers {
+     public ArrayList<Network> Network_List;
+
+    public Layers () {
+      Network_List = new ArrayList<Network>();
+    }
   }
 }
