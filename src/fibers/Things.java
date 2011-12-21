@@ -342,7 +342,7 @@ public class Things {
       }
     }
 
-    public void Connect_To_Other(Network other) {
+    public void Connect_From_Other(Network other) {
       /* Connect all-to-all between two meshes */
       int num_my_nodes = this.Node_List.size();
       int num_other_nodes = other.Node_List.size();
@@ -371,6 +371,13 @@ public class Things {
         Network net = new Network();
         net.Make_Layer(2);
         Network_List.add(net);
+      }
+
+      Network net_prev = this.Network_List.get(0);
+      for (int lcnt = 1; lcnt < num_layers; lcnt++) {
+        Network net = this.Network_List.get(lcnt);
+        net.Connect_From_Other(net_prev);
+        net_prev = net;
       }
     }
   }
