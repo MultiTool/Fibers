@@ -381,4 +381,17 @@ public class Things {
       }
     }
   }
+  /* *************************************************************************************************** */
+  /* 
+   is there any harm in only applying correctors to *one* of the nodes in the output layer?
+   we could also just make the one last node.  probably easiest.
+   * 
+   * every CPoint must have a fire value, its last dimension.
+   * 
+   * every nodebox must have a plane.
+   * 
+   we need graphic output early on.
+   * 
+   * 
+   */
 }
