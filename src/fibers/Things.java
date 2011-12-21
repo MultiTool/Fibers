@@ -12,55 +12,55 @@ import java.util.ArrayList;
  * @author human
  */
 public class Things {
-
+  
   public static int ndims_init = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
   /* *************************************************************************************************** */
-
+  
   public static class PointNd {
-
+    
     public int ndims = 3;
     public int ninputs = ndims - 1;
     public double[] loc = null;
-
+    
     public PointNd(int num_dims) {
       ndims = num_dims;
       ninputs = ndims - 1;
       loc = new double[ndims];
       Clear();
     }
-
+    
     public double getloc(int dim) {
       return loc[dim];
     }
-
+    
     public void setloc(int dim, double value) {
       loc[dim] = value;
     }
-
+    
     public void Add(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] += other.loc[cnt];
       }
     }
-
+    
     public void Subtract(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] -= other.loc[cnt];
       }
     }
-
+    
     public void Copy_From(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = other.loc[cnt];
       }
     }
-
+    
     public void Multiply(double factor) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] *= factor;
       }
     }
-
+    
     public double Magnitude(int dimensions) {
       double sumsq = 0.0;
       for (int cnt = 0; cnt < dimensions; cnt++) {
@@ -69,7 +69,7 @@ public class Things {
       return Math.sqrt(sumsq);
     }
     PointNd another;
-
+    
     public double Get_Distance(PointNd other, int dimensions) {
       another = other;
       double delta, dist = 0.0;// pythagorean distance
@@ -89,8 +89,8 @@ public class Things {
       }
       return sumsq;
     }/* Magnitude_Squared */
-
-
+    
+    
     public void Get_Delta(PointNd other, int dimensions, PointNd pdelta) {
       pdelta.Clear();
       double delta;
@@ -99,7 +99,7 @@ public class Things {
         pdelta.loc[cnt] = delta;
       }
     }
-
+    
     public double Dot_Product(PointNd other) {
       double retval = 0.0;// assume other is a unit vector.
       for (int cnt = 0; cnt < ndims; cnt++) {
@@ -109,7 +109,7 @@ public class Things {
       }
       return retval;
     }
-
+    
     public void Unitize() { // convert to unit vector
       double length = 0.0;
       for (int cnt = 0; cnt < ndims; cnt++) {
@@ -124,27 +124,27 @@ public class Things {
         this.loc[cnt] /= length;
       }
     }
-
+    
     public void Randomize(double minval, double maxval) {
       double range = maxval - minval;
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = minval + (Logic.wheel.nextDouble() * range);
       }
     }
-
+    
     public void Jitter(double minval, double maxval) {
       double range = maxval - minval;
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] += minval + (Logic.wheel.nextDouble() * range);
       }
     }
-
+    
     public void Clear() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = 0.0;
       }
     }
-
+    
     public void CheckNAN() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (loc[cnt] != loc[cnt]) {
@@ -152,7 +152,7 @@ public class Things {
         }
       }
     }
-
+    
     public void CheckInf() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (java.lang.Double.isInfinite(loc[cnt])) {
@@ -161,7 +161,7 @@ public class Things {
       }
     }
     /* *************************************************************************************************** */
-
+    
     public boolean CheckVert() {
       boolean flat = true;
       for (int dcnt = 0; dcnt < ninputs; dcnt++) {
@@ -179,7 +179,7 @@ public class Things {
       return flat;
     }
     /* *************************************************************************************************** */
-
+    
     public void Get_Cross_Product(PointNd a, PointNd b) {
       this.Clear();
       this.loc[0] = (a.loc[1] * b.loc[2] - a.loc[2] * b.loc[1]);
@@ -187,7 +187,7 @@ public class Things {
       this.loc[2] = (a.loc[0] * b.loc[1] - a.loc[1] * b.loc[0]);
     }
     /* *************************************************************************************************** */
-
+    
     public void Normal_To_Plane(PointNd plane) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       double height = this.loc[ninputs];
       if (height == 0.0) {
@@ -198,7 +198,7 @@ public class Things {
       }
     }
     /* *************************************************************************************************** */
-
+    
     public void Get_Steepest(PointNd steep) {// get the steepest line on a plane with respect to Z by rotating its normal 90 degrees.
       steep.Clear();
       double vertical = this.loc[ninputs]; // last dimension is the output 'Z' dim.
@@ -217,15 +217,15 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-
+  
   public class PlaneNd extends PointNd {
     /* *************************************************************************************************** */
-
+    
     public PlaneNd(int num_dims) {
       super(num_dims);
     }
     /* *************************************************************************************************** */
-
+    
     public double Get_Height(PointNd pnt) {
       // get the height of this plane, at this point's coordinates
       double plane_hgt = this.loc[ninputs];// last dimension holds height offset
@@ -237,7 +237,7 @@ public class Things {
       return height;
     }
     /* *************************************************************************************************** */
-
+    
     public void Plane_Ramp_To_Normal(PointNd norm) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
         norm.loc[dimcnt] = (-this.loc[dimcnt]);
@@ -247,13 +247,13 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-
+  
   public static class CPoint extends PointNd {/* Control Point */
     /* *************************************************************************************************** */
-
-
+    
+    
     public CPoint[] US, DS;
-
+    
     public CPoint(int num_dims) {
       super(num_dims);
       US = new CPoint[2];
@@ -261,11 +261,11 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-
-  public static class PointNd_List extends ArrayList<CPoint> {
+  
+  public static class CPoint_List extends ArrayList<CPoint> {
     /* test comment */
-
-    public PointNd_List(int newsize) {
+    
+    public CPoint_List(int newsize) {
       PointNd avg = new PointNd(ndims_init);
       for (int cnt = 0; cnt < newsize; cnt++) {
         CPoint pnt = new CPoint(ndims_init);
@@ -275,7 +275,7 @@ public class Things {
       avg.Multiply(newsize);// experiment to move all the points to the centroid
     }
     /* *************************************************************************************************** */
-
+    
     public void Get_Average(PointNd ret_avg) {
       ret_avg.Clear();
       for (PointNd pnt : this) {
@@ -284,31 +284,35 @@ public class Things {
       ret_avg.Multiply(1.0 / (double) this.size());
     }
     /* *************************************************************************************************** */
-
+    
     public void CheckNAN() {
       for (PointNd pnt : this) {
         pnt.CheckNAN();
       }
     }
-  }/* PointNd_List */
+  }/* CPoint_List */
   /* *************************************************************************************************** */
-
-
+  
+  
   public static class NodeBox {
-
-    public PointNd_List CPoints;
+    
+    public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
-
+    
     public NodeBox() {
       Num_Us = Num_Ds = 0;
-      CPoints = new PointNd_List(0);
+      CPoints = new CPoint_List(0);
     }
-
+    
+    public void Init_States(int num_states) {
+      CPoint cpnt;
+      for (int pcnt = 0; pcnt < num_states; pcnt++) {
+        cpnt = new CPoint(3);
+        CPoints.add(cpnt);
+      }
+    }
+    
     public void ConnectIn(NodeBox upstreamer) {
-      /*
-      go through all us cpoints, 
-       * 
-       */
       int Num_CPoints = upstreamer.CPoints.size();
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
         CPoint us_cpnt = upstreamer.CPoints.get(pcnt);
@@ -321,22 +325,39 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-
+  
   public static class Network {
-
+    
     public ArrayList<NodeBox> Node_List;
-
+    
     public Network() {
       Node_List = new ArrayList<NodeBox>();
     }
+    
+    public void Make_Layer() {
+      for (int ncnt = 0; ncnt < 2; ncnt++) {
+        NodeBox nb = new NodeBox();
+        nb.Init_States(4);
+        Node_List.add(nb);
+      }
+    }
   }
   /* *************************************************************************************************** */
-
+  
   public static class Layers {
-     public ArrayList<Network> Network_List;
-
-    public Layers () {
+    
+    public ArrayList<Network> Network_List;
+    
+    public Layers() {
       Network_List = new ArrayList<Network>();
+    }
+
+    public void Make_Layers(int num_layers) {
+      for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+        Network net = new Network();
+        net.Make_Layer();
+        Network_List.add(net);
+      }
     }
   }
 }
