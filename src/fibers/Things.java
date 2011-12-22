@@ -400,7 +400,57 @@ public class Things {
       }
     }
   }
+
   /* *************************************************************************************************** */
+  public class Bounder {
+
+    double[][] minmax;// = new double[2][ndims];
+
+    public Bounder(double rad, int ndims) {
+      minmax = new double[2][ndims];
+      for (int dcnt = 0; dcnt < ndims; dcnt++) {
+        this.minmax[0][dcnt] = -rad; //dimension min
+        this.minmax[1][dcnt] = rad; //dimension max        
+      }
+    }
+
+    public double Wdt() {
+      return minmax[1][0] - minmax[0][0];
+    }
+
+    public double Hgt() {
+      return minmax[1][1] - minmax[0][1];
+    }
+
+    public double Dep() {
+      return minmax[1][2] - minmax[0][2];
+    }
+
+    public double Sz(int dim) {
+      return minmax[1][dim] - minmax[0][dim];
+    }
+
+    public double Rad(int dim) {
+      return Sz(dim) / 2.0;
+    }
+
+    public double CtrX() {
+      return (minmax[1][0] + minmax[0][0]) / 2.0;
+    }
+
+    public double CtrY() {
+      return (minmax[1][1] + minmax[0][1]) / 2.0;
+    }
+
+    public double CtrZ() {
+      return (minmax[1][2] + minmax[0][2]) / 2.0;
+    }
+
+    public double Ctr(int dim) {
+      return (minmax[1][dim] + minmax[0][dim]) / 2.0;
+    }
+  }
+    /* *************************************************************************************************** */
   /* 
   is there any harm in only applying correctors to *one* of the nodes in the output layer?
   we could also just make the one last node.  probably easiest.
@@ -413,4 +463,5 @@ public class Things {
    * 
    * 
    */
+
 }
