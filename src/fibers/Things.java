@@ -6,6 +6,7 @@ package fibers;
 
 import java.security.interfaces.DSAKey;
 import java.util.ArrayList;
+import java.awt.*;
 
 /**
  *
@@ -259,6 +260,10 @@ public class Things {
       US = new CPoint[2];
       DS = new CPoint[2];
     }
+    /* *************************************************************************************************** */
+
+    public void Draw_Me(Graphics2D gr) {
+    }
   }
   /* *************************************************************************************************** */
 
@@ -303,6 +308,13 @@ public class Things {
       Num_Us = Num_Ds = 0;
       CPoints = new CPoint_List(0);
     }
+    /* *************************************************************************************************** */
+
+    public void Draw_Me(Graphics2D gr) {
+      for (CPoint cpnt : CPoints) {
+        cpnt.Draw_Me(gr);
+      }
+    }
 
     public void Init_States(int num_states) {
       CPoint cpnt;
@@ -332,6 +344,13 @@ public class Things {
 
     public Network() {
       Node_List = new ArrayList<NodeBox>();
+    }
+    /* *************************************************************************************************** */
+
+    public void Draw_Me(Graphics2D gr) {
+      for (NodeBox node : Node_List) {
+        node.Draw_Me(gr);
+      }
     }
 
     public void Make_Layer(int num_nodes) {
@@ -383,14 +402,14 @@ public class Things {
   }
   /* *************************************************************************************************** */
   /* 
-   is there any harm in only applying correctors to *one* of the nodes in the output layer?
-   we could also just make the one last node.  probably easiest.
+  is there any harm in only applying correctors to *one* of the nodes in the output layer?
+  we could also just make the one last node.  probably easiest.
    * 
    * every CPoint must have a fire value, its last dimension.
    * 
    * every nodebox must have a plane.
    * 
-   we need graphic output early on.
+  we need graphic output early on.
    * 
    * 
    */
