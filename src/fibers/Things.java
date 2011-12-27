@@ -219,7 +219,7 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
-  public class PlaneNd extends PointNd {
+  public static class PlaneNd extends PointNd {
     /* *************************************************************************************************** */
 
     public PlaneNd(int num_dims) {
@@ -309,7 +309,7 @@ public class Things {
       CPoints = new CPoint_List(0);
     }
     /* *************************************************************************************************** */
-    Roto_Plane planeform;
+    public Roto_Plane planeform;
 
     public static class Roto_Plane extends PlaneNd {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
@@ -320,6 +320,9 @@ public class Things {
       public double above, below;
       PointNd normal = new PointNd(ndims_init);
       PointNd desire = new PointNd(ndims_init);
+      int xorg, yorg;
+      Bounder Bounds;
+
 
       /* *************************************************************************************************** */
       public Roto_Plane(int num_dims) {
@@ -361,21 +364,16 @@ public class Things {
          *  compute the derivative of the activation with respect to the sum.
          *  Defined types are SIGMOID (-1 to +1) and ASYMSIGMOID (0 to +1).
          * */
-        //Value *= (1.17 * 1.01);
-        Value *= (1.17 * 1.0095);// is 1.181115
         Value = (Value + 1.0) / 2;
-//    Value = (Value * 0.5)+0.5;
         double SigmoidPrimeOffset = 0.1;
         /*  asymmetrical sigmoid function in range 0.0 to 1.0.  */
         double returnval = (SigmoidPrimeOffset + (Value * (1.0 - Value)));
         returnval *= 2.857142857142857;// modify to fit 1:1 slope of sigmooid
         return returnval * 1.0;
-        //return ((SigmoidPrimeOffset + (Value * (1.0 - Value))));
       }
       /* *************************************************************************************************** */
 
       public void Ping(PointNd pnt) {
-        //sigmoid_deriv
         double phgt = pnt.loc[ninputs];
         // first get the height of the plane at this loc,
         double result;
@@ -504,7 +502,7 @@ public class Things {
       public void Train_Inlinks(PointNd invec, int ninputs_local, double lrate, double corrector) {
         double invec_squared = invec.Magnitude_Squared(ninputs_local);
         if (invec_squared == 0.0) {
-          invec_squared = fudge;
+          invec_squared = Logic.fudge;
         }
         for (int cnt = 0; cnt < ninputs_local; cnt++) {
           double adj = (invec.loc[cnt] / invec_squared);// unitary adjustment tool
@@ -517,7 +515,6 @@ public class Things {
 
       public void Plot_Gradient(Graphics2D g2) {
         /* all about the gradient for display */
-        // , PointNd grad0, PointNd grad1
         double hgt = this.loc[0];
         double grad_x0;
         double grad_y0;
@@ -529,8 +526,7 @@ public class Things {
           ratios[cnt] = steepest.loc[cnt] / steepest.loc[ninputs];// inverse slope for each shadow of the steepest
         }
         if (true) {
-          double offset = planeform.loc[ninputs];
-          //offset *= Bounds.Rad(ninputs);
+          double offset = this.loc[ninputs];
           double height0 = -1.0 - offset;
           double height1 = 1.0 - offset;
           double brad = Bounds.Rad(ninputs);
