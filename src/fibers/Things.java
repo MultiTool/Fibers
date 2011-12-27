@@ -320,6 +320,7 @@ public class Things {
       public double above, below;
       PointNd normal = new PointNd(ndims_init);
       PointNd desire = new PointNd(ndims_init);
+      /* These values below should come from NodeBox context! */
       int xorg, yorg;
       Bounder Bounds;
 

@@ -29,7 +29,7 @@ public class FibersView extends FrameView {
 
     {
       mainPanel.add(Blob_Panel);
-      Blob_Panel.start();
+      //Blob_Panel.start();
     }
 
     // status bar initialization - message timeout, idle icon and busy animation, etc
