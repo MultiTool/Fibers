@@ -28,7 +28,14 @@ public class FibersView extends FrameView {
     initComponents();
 
     {
-      mainPanel.add(Blob_Panel);
+      java.awt.Container pt = mainPanel.getParent();
+      pt.remove(mainPanel);
+      pt.add(Blob_Panel);
+      //mainPanel.add(Blob_Panel);
+      //mainPanel.pack();
+      Blob_Panel.setVisible(true);
+      //mainPanel.setVisible(true);
+      Blob_Panel.repaint();
       //Blob_Panel.start();
     }
 

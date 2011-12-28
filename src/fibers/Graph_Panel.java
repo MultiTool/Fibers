@@ -13,10 +13,16 @@ import javax.swing.*;
  * @author human
  */
 public class Graph_Panel extends JPanel implements Runnable {
-  /* *************************************************************************************************** */
 
+  /* *************************************************************************************************** */
+  public Graph_Panel() {
+    this.setBackground(Color.red);
+  }
+
+  /* *************************************************************************************************** */
   @Override
-  public void paint(Graphics g) {
+  public void paintComponent(Graphics g) {
+    super.paintComponent(g);
     Graphics2D g2 = (Graphics2D) g;
     g2.setBackground(Color.yellow);
   }
