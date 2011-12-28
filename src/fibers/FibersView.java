@@ -15,6 +15,8 @@ import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import java.awt.*;
+
 /**
  * The application's main frame.
  */
@@ -28,15 +30,20 @@ public class FibersView extends FrameView {
     initComponents();
 
     {
-      java.awt.Container pt = mainPanel.getParent();
-      pt.remove(mainPanel);
-      pt.add(Blob_Panel);
-      //mainPanel.add(Blob_Panel);
-      //mainPanel.pack();
+      if (false) {
+        java.awt.Container pt = mainPanel.getParent();
+        pt.remove(mainPanel);
+        pt.add(Blob_Panel);
+      } else {
+        mainPanel.add(Blob_Panel, BorderLayout.CENTER);
+        mainPanel.setVisible(true);
+      }
       Blob_Panel.setVisible(true);
-      //mainPanel.setVisible(true);
       Blob_Panel.repaint();
       //Blob_Panel.start();
+
+      JFrame mainFrame = FibersApp.getApplication().getMainFrame();
+      mainFrame.pack();
     }
 
     // status bar initialization - message timeout, idle icon and busy animation, etc

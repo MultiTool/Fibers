@@ -12,7 +12,7 @@ import javax.swing.*;
  *
  * @author human
  */
-public class Graph_Panel extends JPanel implements Runnable {
+public class Graph_Panel extends javax.swing.JPanel implements Runnable {
 
   /* *************************************************************************************************** */
   public Graph_Panel() {
