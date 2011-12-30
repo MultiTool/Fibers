@@ -14,7 +14,10 @@ import javax.swing.*;
  */
 public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
 
+  Thread mythread;
+  boolean keeprunning = true;
   /* *************************************************************************************************** */
+
   public Drawing_Canvas() {
     this.setBackground(Color.red);
   }
@@ -30,14 +33,23 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
   /* *************************************************************************************************** */
 
   public void start() {
+    mythread = new Thread(this);
+    keeprunning = true;
+    mythread.start();
   }
   /* *************************************************************************************************** */
 
   public void stop() {
+    keeprunning = false;
+    mythread = null;
   }
   /* *************************************************************************************************** */
 
   @Override
   public void run() {
-  }
+    while (keeprunning) {
+      boolean nop = true;
+      System.out.println(nop);
+    }
+  } 
 }

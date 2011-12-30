@@ -31,6 +31,7 @@ public class FibersView extends FrameView {
     initComponents();
 
     {
+      
       java.awt.Container pt = outerPanel.getParent();
 
       innerPanel.setLayout(new BorderLayout(10, 10));
@@ -38,7 +39,7 @@ public class FibersView extends FrameView {
 
       Blob_Panel.setVisible(true);
       Blob_Panel.repaint();
-      //Blob_Panel.start();
+      Blob_Panel.start();
 
       JFrame mainFrame = FibersApp.getApplication().getMainFrame();
       mainFrame.pack();
