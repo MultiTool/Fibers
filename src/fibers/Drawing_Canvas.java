@@ -12,10 +12,10 @@ import javax.swing.*;
  *
  * @author human
  */
-public class Graph_Panel extends javax.swing.JPanel implements Runnable {
+public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
 
   /* *************************************************************************************************** */
-  public Graph_Panel() {
+  public Drawing_Canvas() {
     this.setBackground(Color.red);
   }
 

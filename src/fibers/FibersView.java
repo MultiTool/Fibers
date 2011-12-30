@@ -22,7 +22,7 @@ import java.awt.*;
  */
 public class FibersView extends FrameView {
 
-  static Graph_Panel Blob_Panel = new Graph_Panel();
+  static Drawing_Canvas Blob_Panel = new Drawing_Canvas();
 
   public FibersView(SingleFrameApplication app) {
     super(app);
@@ -30,13 +30,18 @@ public class FibersView extends FrameView {
     initComponents();
 
     {
+      java.awt.Container pt = mainPanel.getParent();
       if (false) {
-        java.awt.Container pt = mainPanel.getParent();
         pt.remove(mainPanel);
         pt.add(Blob_Panel);
       } else {
+
+        Blob_Panel.setBackground(Color.red);
+        Blob_Panel.setSize(700, 700);
+
         mainPanel.add(Blob_Panel, BorderLayout.CENTER);
         mainPanel.setVisible(true);
+        pt.setLayout(new BorderLayout(10, 10));
       }
       Blob_Panel.setVisible(true);
       Blob_Panel.repaint();
