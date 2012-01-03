@@ -670,7 +670,7 @@ public class Things {
     public static double xoffs, yoffs;
     public static double xscale, yscale;
 
-    public void Project(double xloc, double yloc, PointNd answer) {
+    public void To_Screen(double xloc, double yloc, PointNd answer) {
       answer.loc[0] = xoffs + (xloc * xscale);
       answer.loc[1] = yoffs + (yloc * yscale);
     }
@@ -678,7 +678,7 @@ public class Things {
     public void Accumulate(TransForm parent, double xoffsp, double yoffsp, double xscalep, double yscalep) {
       // create my local transform by adding local context to parent context
       // wrong code, just a place holder
-      xoffs = parent.xoffs + xoffsp;
+      xoffs = (parent.xoffs * parent.xscale) + xoffsp;
       yoffs = parent.yoffs + yoffsp;
       xscale = parent.xscale * xscalep;
       yscale = parent.yscale * yscalep;
