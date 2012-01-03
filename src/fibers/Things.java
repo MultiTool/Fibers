@@ -665,17 +665,23 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
-  public static class XForm {
+  public static class TransForm {
 
     public static double xoffs, yoffs;
     public static double xscale, yscale;
 
     public void Project(double xloc, double yloc, PointNd answer) {
-      double newx, newy;
-      newx = xoffs + (xloc * xscale);
-      newy = yoffs + (yloc * yscale);
-      answer.loc[0] = newx;
-      answer.loc[1] = newy;
+      answer.loc[0] = xoffs + (xloc * xscale);
+      answer.loc[1] = yoffs + (yloc * yscale);
+    }
+
+    public void Accumulate(TransForm parent, double xoffsp, double yoffsp, double xscalep, double yscalep) {
+      // create my local transform by adding local context to parent context
+      // wrong code, just a place holder
+      xoffs = parent.xoffs + xoffsp;
+      yoffs = parent.yoffs + yoffsp;
+      xscale = parent.xscale * xscalep;
+      yscale = parent.yscale * yscalep;
     }
   }
   /* *************************************************************************************************** */
