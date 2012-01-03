@@ -16,10 +16,13 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
 
   Thread mythread;
   boolean keeprunning = true;
+  Things.Layers lay = null;
   /* *************************************************************************************************** */
 
   public Drawing_Canvas() {
     this.setBackground(Color.red);
+    lay = new Things.Layers();
+    lay.Make_Layers(3);
   }
 
   /* *************************************************************************************************** */
@@ -29,6 +32,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     Graphics2D g2 = (Graphics2D) g;
     g2.setBackground(Color.yellow);
     g2.clearRect(0, 0, this.getWidth(), this.getHeight());
+    lay.Draw_Me(g2);
   }
   /* *************************************************************************************************** */
 

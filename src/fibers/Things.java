@@ -640,10 +640,47 @@ public class Things {
         net_prev = net;
       }
     }
-  }
+    /* *************************************************************************************************** */
 
+    public void Draw_Me(Graphics2D gr) {
+      int num_layers = Network_List.size();
+      for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+        Network net = this.Network_List.get(lcnt);
+        net.Draw_Me(gr);
+        /*
+         * so the question is how to put one drawing transform (at least offset) within another
+         * pass coords live-time?
+         * 
+         * we want this to be simple.  so every layer has an org, every nodebox has a relaive org
+         * inside the layer.  every cpoint has a relative org inside the nodebox.
+         * 
+         * maybe just pass the org offset as an object to the children in all draw_me calls?  yep.
+         * 
+         * everybody needs to think in their local coords.  
+         * 
+         * 
+         */
+      }
+    }
+  }
   /* *************************************************************************************************** */
-  public class Bounder {
+
+  public static class XForm {
+
+    public static double xoffs, yoffs;
+    public static double xscale, yscale;
+
+    public void Project(double xloc, double yloc, PointNd answer) {
+      double newx, newy;
+      newx = xoffs + (xloc * xscale);
+      newy = yoffs + (yloc * yscale);
+      answer.loc[0] = newx;
+      answer.loc[1] = newy;
+    }
+  }
+  /* *************************************************************************************************** */
+
+  public static class Bounder {
 
     double[][] minmax;// = new double[2][ndims];
 
