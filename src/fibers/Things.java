@@ -257,16 +257,25 @@ public class Things {
   /* *************************************************************************************************** */
   public static class CPoint extends PointNd implements Drawable {/* Control Point */
     /* *************************************************************************************************** */
+
+
     public CPoint[] US, DS;
+    PointNd screenloc = new PointNd(2);// temporary but often-reused
 
     public CPoint(int num_dims) {
       super(num_dims);
+      for (int cnt = 0; cnt < num_dims; cnt++) {
+        this.loc[cnt] = 0.5;
+      }
       US = new CPoint[2];
       DS = new CPoint[2];
     }
     /* *************************************************************************************************** */
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
+      tr.To_Screen(this.loc[0], this.loc[1], screenloc);
+      gr.setColor(Color.red);
+      gr.fillRect((int) (screenloc.loc[0]), (int) (screenloc.loc[1]), 3, 3);
     }
   }
   /* *************************************************************************************************** */
@@ -307,9 +316,10 @@ public class Things {
 
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
-    public double xorg, yorg;
+    public double xorg, yorg, xscale, yscale;
 
     public NodeBox() {
+      xscale = yscale = 10.0;
       Num_Us = Num_Ds = 0;
       CPoints = new CPoint_List(0);
     }
@@ -558,7 +568,7 @@ public class Things {
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       TransForm mytrans = new TransForm();
-      mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
+      mytrans.Accumulate(tr, this.xorg, this.yorg, this.xscale, this.yscale);
       for (CPoint cpnt : CPoints) {
         cpnt.Draw_Me(mytrans, gr);
       }
