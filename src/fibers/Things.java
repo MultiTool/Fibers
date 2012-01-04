@@ -219,6 +219,12 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
+  public interface Drawable {
+
+    public void Draw_Me(TransForm tr, Graphics2D gr);
+  }
+  /* *************************************************************************************************** */
+
   public static class PlaneNd extends PointNd {
     /* *************************************************************************************************** */
 
@@ -249,10 +255,8 @@ public class Things {
   }
 
   /* *************************************************************************************************** */
-  public static class CPoint extends PointNd {/* Control Point */
+  public static class CPoint extends PointNd implements Drawable {/* Control Point */
     /* *************************************************************************************************** */
-
-
     public CPoint[] US, DS;
 
     public CPoint(int num_dims) {
@@ -262,7 +266,7 @@ public class Things {
     }
     /* *************************************************************************************************** */
 
-    public void Draw_Me(Graphics2D gr) {
+    public void Draw_Me(TransForm tr, Graphics2D gr) {
     }
   }
   /* *************************************************************************************************** */
@@ -299,10 +303,11 @@ public class Things {
   /* *************************************************************************************************** */
 
 
-  public static class NodeBox {
+  public static class NodeBox implements Drawable {
 
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
+    public double xorg, yorg;
 
     public NodeBox() {
       Num_Us = Num_Ds = 0;
@@ -551,9 +556,11 @@ public class Things {
       }
     }
 
-    public void Draw_Me(Graphics2D gr) {
+    public void Draw_Me(TransForm tr, Graphics2D gr) {
+      TransForm mytrans = new TransForm();
+      mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
       for (CPoint cpnt : CPoints) {
-        cpnt.Draw_Me(gr);
+        cpnt.Draw_Me(mytrans, gr);
       }
     }
 
@@ -579,18 +586,21 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
-  public static class Network {
+  public static class Network implements Drawable {
 
     public ArrayList<NodeBox> Node_List;
+    public double xorg, yorg;
 
     public Network() {
       Node_List = new ArrayList<NodeBox>();
     }
     /* *************************************************************************************************** */
 
-    public void Draw_Me(Graphics2D gr) {
+    public void Draw_Me(TransForm tr, Graphics2D gr) {
+      TransForm mytrans = new TransForm();
+      mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
       for (NodeBox node : Node_List) {
-        node.Draw_Me(gr);
+        node.Draw_Me(mytrans, gr);
       }
     }
 
@@ -618,9 +628,10 @@ public class Things {
   }
   /* *************************************************************************************************** */
 
-  public static class Layers {
+  public static class Layers implements Drawable {
 
     public ArrayList<Network> Network_List;
+    public double xorg, yorg;
 
     public Layers() {
       Network_List = new ArrayList<Network>();
@@ -642,11 +653,15 @@ public class Things {
     }
     /* *************************************************************************************************** */
 
-    public void Draw_Me(Graphics2D gr) {
+    public void Draw_Me(TransForm tr, Graphics2D gr) {
+
+      TransForm mytrans = new TransForm();
+      mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
+
       int num_layers = Network_List.size();
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
         Network net = this.Network_List.get(lcnt);
-        net.Draw_Me(gr);
+        net.Draw_Me(mytrans, gr);
         /*
          * so the question is how to put one drawing transform (at least offset) within another
          * pass coords live-time?
@@ -678,8 +693,10 @@ public class Things {
     public void Accumulate(TransForm parent, double xoffsp, double yoffsp, double xscalep, double yscalep) {
       // create my local transform by adding local context to parent context
       // wrong code, just a place holder
-      xoffs = (parent.xoffs * parent.xscale) + xoffsp;
-      yoffs = parent.yoffs + yoffsp;
+      PointNd org = new PointNd(2);
+      parent.To_Screen(xoffsp, yoffsp, org);
+      xoffs = org.loc[0];
+      yoffs = org.loc[1];
       xscale = parent.xscale * xscalep;
       yscale = parent.yscale * yscalep;
     }

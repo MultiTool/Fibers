@@ -32,7 +32,8 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     Graphics2D g2 = (Graphics2D) g;
     g2.setBackground(Color.yellow);
     g2.clearRect(0, 0, this.getWidth(), this.getHeight());
-    lay.Draw_Me(g2);
+    Things.TransForm tr= new Things.TransForm();
+    lay.Draw_Me(tr,g2);
   }
   /* *************************************************************************************************** */
 
