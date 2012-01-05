@@ -275,6 +275,10 @@ public class Things {
     }
     /* *************************************************************************************************** */
 
+    public double Get_Height() {
+      return this.loc[this.ninputs];
+    }
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
       gr.setColor(Color.red);
@@ -282,9 +286,11 @@ public class Things {
     }
 
     public void Collect_And_Fire() {
+      double SumFire = 0.0;
       int Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
         CPoint cpnt = this.US[pcnt];
+        SumFire += cpnt.Get_Height();// no no no.  
         // more goes here
       }
     }
@@ -292,7 +298,6 @@ public class Things {
   /* *************************************************************************************************** */
 
   public static class CPoint_List extends ArrayList<CPoint> {
-    /* test comment */
 
     public CPoint_List(int newsize) {
       PointNd avg = new PointNd(ndims_init);
