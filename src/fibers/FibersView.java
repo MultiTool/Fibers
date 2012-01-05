@@ -38,8 +38,8 @@ public class FibersView extends FrameView {
       innerPanel.add(Blob_Panel, BorderLayout.CENTER);
 
       Blob_Panel.setVisible(true);
-      Blob_Panel.repaint();
-      Blob_Panel.start();
+      //Blob_Panel.repaint();
+      //Blob_Panel.start();
 
       JFrame mainFrame = FibersApp.getApplication().getMainFrame();
       mainFrame.pack();

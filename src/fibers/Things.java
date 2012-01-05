@@ -692,8 +692,8 @@ public class Things {
 
   public static class TransForm {
 
-    public static double xoffs, yoffs;
-    public static double xscale = 1.0, yscale = 1.0;
+    public double xoffs = 0.0, yoffs = 0.0;
+    public double xscale = 1.0, yscale = 1.0;
 
     public void To_Screen(double xloc, double yloc, PointNd answer) {
       answer.loc[0] = xoffs + (xloc * xscale);
