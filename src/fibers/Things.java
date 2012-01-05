@@ -13,55 +13,55 @@ import java.awt.*;
  * @author human
  */
 public class Things {
-  
+
   public static int ndims_init = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
   /* *************************************************************************************************** */
-  
+
   public static class PointNd {
-    
+
     public int ndims = 3;
     public int ninputs = ndims - 1;
     public double[] loc = null;
-    
+
     public PointNd(int num_dims) {
       ndims = num_dims;
       ninputs = ndims - 1;
       loc = new double[ndims];
       Clear();
     }
-    
+
     public double getloc(int dim) {
       return loc[dim];
     }
-    
+
     public void setloc(int dim, double value) {
       loc[dim] = value;
     }
-    
+
     public void Add(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] += other.loc[cnt];
       }
     }
-    
+
     public void Subtract(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] -= other.loc[cnt];
       }
     }
-    
+
     public void Copy_From(PointNd other) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = other.loc[cnt];
       }
     }
-    
+
     public void Multiply(double factor) {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] *= factor;
       }
     }
-    
+
     public double Magnitude(int dimensions) {
       double sumsq = 0.0;
       for (int cnt = 0; cnt < dimensions; cnt++) {
@@ -70,7 +70,7 @@ public class Things {
       return Math.sqrt(sumsq);
     }
     PointNd another;
-    
+
     public double Get_Distance(PointNd other, int dimensions) {
       another = other;
       double delta, dist = 0.0;// pythagorean distance
@@ -90,8 +90,8 @@ public class Things {
       }
       return sumsq;
     }/* Magnitude_Squared */
-    
-    
+
+
     public void Get_Delta(PointNd other, int dimensions, PointNd pdelta) {
       pdelta.Clear();
       double delta;
@@ -100,7 +100,7 @@ public class Things {
         pdelta.loc[cnt] = delta;
       }
     }
-    
+
     public double Dot_Product(PointNd other) {
       double retval = 0.0;// assume other is a unit vector.
       for (int cnt = 0; cnt < ndims; cnt++) {
@@ -110,7 +110,7 @@ public class Things {
       }
       return retval;
     }
-    
+
     public void Unitize() { // convert to unit vector
       double length = 0.0;
       for (int cnt = 0; cnt < ndims; cnt++) {
@@ -125,27 +125,27 @@ public class Things {
         this.loc[cnt] /= length;
       }
     }
-    
+
     public void Randomize(double minval, double maxval) {
       double range = maxval - minval;
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = minval + (Logic.wheel.nextDouble() * range);
       }
     }
-    
+
     public void Jitter(double minval, double maxval) {
       double range = maxval - minval;
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] += minval + (Logic.wheel.nextDouble() * range);
       }
     }
-    
+
     public void Clear() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         loc[cnt] = 0.0;
       }
     }
-    
+
     public void CheckNAN() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (loc[cnt] != loc[cnt]) {
@@ -153,7 +153,7 @@ public class Things {
         }
       }
     }
-    
+
     public void CheckInf() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (java.lang.Double.isInfinite(loc[cnt])) {
@@ -162,7 +162,7 @@ public class Things {
       }
     }
     /* *************************************************************************************************** */
-    
+
     public boolean CheckVert() {
       boolean flat = true;
       for (int dcnt = 0; dcnt < ninputs; dcnt++) {
@@ -180,7 +180,7 @@ public class Things {
       return flat;
     }
     /* *************************************************************************************************** */
-    
+
     public void Get_Cross_Product(PointNd a, PointNd b) {
       this.Clear();
       this.loc[0] = (a.loc[1] * b.loc[2] - a.loc[2] * b.loc[1]);
@@ -188,7 +188,7 @@ public class Things {
       this.loc[2] = (a.loc[0] * b.loc[1] - a.loc[1] * b.loc[0]);
     }
     /* *************************************************************************************************** */
-    
+
     public void Normal_To_Plane(PointNd plane) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       double height = this.loc[ninputs];
       if (height == 0.0) {
@@ -199,7 +199,7 @@ public class Things {
       }
     }
     /* *************************************************************************************************** */
-    
+
     public void Get_Steepest(PointNd steep) {// get the steepest line on a plane with respect to Z by rotating its normal 90 degrees.
       steep.Clear();
       double vertical = this.loc[ninputs]; // last dimension is the output 'Z' dim.
@@ -218,21 +218,21 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-  
+
   public interface Drawable {
-    
+
     public void Draw_Me(TransForm tr, Graphics2D gr);
   }
   /* *************************************************************************************************** */
-  
+
   public static class PlaneNd extends PointNd {
     /* *************************************************************************************************** */
-    
+
     public PlaneNd(int num_dims) {
       super(num_dims);
     }
     /* *************************************************************************************************** */
-    
+
     public double Get_Height(PointNd pnt) {
       // get the height of this plane, at this point's coordinates
       double plane_hgt = this.loc[ninputs];// last dimension holds height offset
@@ -244,7 +244,7 @@ public class Things {
       return height;
     }
     /* *************************************************************************************************** */
-    
+
     public void Plane_Ramp_To_Normal(PointNd norm) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
         norm.loc[dimcnt] = (-this.loc[dimcnt]);
@@ -256,11 +256,10 @@ public class Things {
 
   /* *************************************************************************************************** */
   public static class CPoint extends PointNd implements Drawable {/* Control Point */
-    /* *************************************************************************************************** */
-    
-    
     public CPoint[] US, DS;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
+    double radius, diameter;
+    /* *************************************************************************************************** */
 
     public CPoint(int num_dims) {
       super(num_dims);
@@ -269,20 +268,22 @@ public class Things {
       }
       US = new CPoint[2];
       DS = new CPoint[2];
+      radius = 2.0;
+      diameter = radius * 2.0;
     }
     /* *************************************************************************************************** */
-    
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
       gr.setColor(Color.red);
-      gr.fillRect((int) (screenloc.loc[0]), (int) (screenloc.loc[1]), 3, 3);
+      gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int)diameter, (int)diameter);
     }
   }
   /* *************************************************************************************************** */
-  
+
   public static class CPoint_List extends ArrayList<CPoint> {
     /* test comment */
-    
+
     public CPoint_List(int newsize) {
       PointNd avg = new PointNd(ndims_init);
       for (int cnt = 0; cnt < newsize; cnt++) {
@@ -293,7 +294,7 @@ public class Things {
       avg.Multiply(newsize);// experiment to move all the points to the centroid
     }
     /* *************************************************************************************************** */
-    
+
     public void Get_Average(PointNd ret_avg) {
       ret_avg.Clear();
       for (PointNd pnt : this) {
@@ -302,7 +303,7 @@ public class Things {
       ret_avg.Multiply(1.0 / (double) this.size());
     }
     /* *************************************************************************************************** */
-    
+
     public void CheckNAN() {
       for (PointNd pnt : this) {
         pnt.CheckNAN();
@@ -310,14 +311,14 @@ public class Things {
     }
   }/* CPoint_List */
   /* *************************************************************************************************** */
-  
-  
+
+
   public static class NodeBox implements Drawable {
-    
+
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
     public double xorg, yorg, xscale, yscale;
-    
+
     public NodeBox() {
       xscale = yscale = 10.0;
       Num_Us = Num_Ds = 0;
@@ -325,7 +326,7 @@ public class Things {
     }
     /* *************************************************************************************************** */
     public Roto_Plane planeform;
-    
+
     public static class Roto_Plane extends PlaneNd {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
 
@@ -351,7 +352,7 @@ public class Things {
         below = 0.0;
       }
       /* *************************************************************************************************** */
-      
+
       public double ActFun(double xin) {
         double OutVal;
         if (false) {
@@ -366,7 +367,7 @@ public class Things {
          */
       }
       /* *************************************************************************************************** */
-      
+
       public double Reverse_ActFun(double xin) {
         double OutVal;// from http://www.quickmath.com/webMathematica3/quickmath/page.jsp?s1=equations&s2=solve&s3=basic
         // reverse, inverse of sigmoid is:
@@ -374,7 +375,7 @@ public class Things {
         return OutVal;
       }
       /* *************************************************************************************************** */
-      
+
       public double sigmoid_deriv(double Value) { /* modified for default return  -dbr */
         /* Given the unit's activation value and sum of weighted inputs,
          *  compute the derivative of the activation with respect to the sum.
@@ -388,7 +389,7 @@ public class Things {
         return returnval * 1.0;
       }
       /* *************************************************************************************************** */
-      
+
       public void Ping(PointNd pnt) {
         double phgt = pnt.loc[ninputs];
         // first get the height of the plane at this loc,
@@ -397,7 +398,7 @@ public class Things {
         result = this.ActFun(result);
         // corrector is the distance from the sigmoid plane TOWARD this point's height
         double corr = phgt - result;
-        
+
         double bell = this.sigmoid_deriv(phgt);
         corr *= bell;
 
@@ -407,7 +408,7 @@ public class Things {
         }
         pingvec.loc[ninputs] = 1.0;
         Train_Inlinks(pingvec, ndims, 0.01, corr);
-        
+
         double pdrop = (phgt * 0.1);
         this.rangectr = (this.rangectr * 0.9) + pdrop;
         if (true) {
@@ -435,14 +436,14 @@ public class Things {
         //this.Balance();
       }
       /* *************************************************************************************************** */
-      
+
       public double Get_Sigmoid_Height(PointNd pnt) {
         double hgt = this.Get_Height(pnt);
         hgt = this.ActFun(hgt);
         return hgt;
       }
       /* *************************************************************************************************** */
-      
+
       public void Balance() {
         double sub_ratio = above;// ratio of above-zero to total
         if (sub_ratio < 0.25 || 0.75 < sub_ratio) {
@@ -461,7 +462,7 @@ public class Things {
         }
       }
       /* *************************************************************************************************** */
-      
+
       public void Attract_Point(PointNd pnt, PointNd pdesire) {
         double shadow_hgt = this.Get_Height(pnt);// height on raw plane at this point's position.
         double sigmoid_shadow_hgt = this.ActFun(shadow_hgt);// height on sigmoid plane at this point's position.
@@ -508,13 +509,13 @@ public class Things {
         //vfactor = 0.07;// test with 7
         vfactor *= 0.3;
         pdesire.loc[ninputs] *= vfactor;
-        
+
         double jitamp = 0.0001;
         pdesire.Jitter(-jitamp, jitamp);
         //pdesire.loc[ninputs] = 0.0;
       }
       /* *************************************************************************************************** */
-      
+
       public void Train_Inlinks(PointNd invec, int ninputs_local, double lrate, double corrector) {
         double invec_squared = invec.Magnitude_Squared(ninputs_local);
         if (invec_squared == 0.0) {
@@ -527,8 +528,8 @@ public class Things {
         }
       }/* Train_Inlinks */
       /* *************************************************************************************************** */
-      
-      
+
+
       public void Plot_Gradient(Graphics2D g2) {
         /* all about the gradient for display */
         double hgt = this.loc[0];
@@ -565,25 +566,25 @@ public class Things {
         g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
       }
     }
-    
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       TransForm mytrans = new TransForm();
       mytrans.Accumulate(tr, this.xorg, this.yorg, this.xscale, this.yscale);
-      
+
       PointNd boxmin = new PointNd(2);
       PointNd boxmax = new PointNd(2);
       double xmin = -1.0, ymin = -1.0, xmax = 1.0, ymax = 1.0;
       mytrans.To_Screen(xmin, ymin, boxmin);
       mytrans.To_Screen(xmax, ymax, boxmax);
-      
+
       gr.setColor(Color.green);
       gr.drawRect((int) (boxmin.loc[0]), (int) (boxmin.loc[1]), (int) (boxmax.loc[0] - boxmin.loc[0]), (int) (boxmax.loc[1] - boxmin.loc[1]));
-      
+
       for (CPoint cpnt : CPoints) {
         cpnt.Draw_Me(mytrans, gr);
       }
     }
-    
+
     public void Init_States(int num_states) {
       CPoint cpnt;
       double amp = 1.0;
@@ -594,7 +595,7 @@ public class Things {
         CPoints.add(cpnt);
       }
     }
-    
+
     public void ConnectIn(NodeBox upstreamer) {
       int Num_CPoints = upstreamer.CPoints.size();
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
@@ -608,17 +609,17 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-  
+
   public static class Network implements Drawable {
-    
+
     public ArrayList<NodeBox> Node_List;
     public double xorg, yorg;
-    
+
     public Network() {
       Node_List = new ArrayList<NodeBox>();
     }
     /* *************************************************************************************************** */
-    
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       TransForm mytrans = new TransForm();
       mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
@@ -626,21 +627,21 @@ public class Things {
         node.Draw_Me(mytrans, gr);
       }
     }
-    
+
     public void Make_Layer(int num_nodes) {
       for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
         NodeBox nb = new NodeBox();
         nb.Init_States(4);
-        nb.xorg = (ncnt + 1.0) * 21.0;
+        nb.xorg = (ncnt + 1.0) * 50.0;
         Node_List.add(nb);
       }
     }
-    
+
     public void Connect_From_Other(Network other) {
       /* Connect all-to-all between two meshes */
       int num_my_nodes = this.Node_List.size();
       int num_other_nodes = other.Node_List.size();
-      
+
       for (int ncnt0 = 0; ncnt0 < num_other_nodes; ncnt0++) {
         NodeBox us = other.Node_List.get(ncnt0);
         for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
@@ -651,24 +652,26 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-  
+
   public static class Layers implements Drawable {
-    
+
     public ArrayList<Network> Network_List;
     public double xorg, yorg;
-    
+
     public Layers() {
       Network_List = new ArrayList<Network>();
+      xorg = 100;
+      yorg = 100;
     }
-    
+
     public void Make_Layers(int num_layers) {
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
         Network net = new Network();
         net.Make_Layer(2);
-        net.yorg = lcnt * 20;
+        net.yorg = lcnt * 50;
         Network_List.add(net);
       }
-      
+
       Network net_prev = this.Network_List.get(0);
       for (int lcnt = 1; lcnt < num_layers; lcnt++) {
         Network net = this.Network_List.get(lcnt);
@@ -677,12 +680,12 @@ public class Things {
       }
     }
     /* *************************************************************************************************** */
-    
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
-      
+
       TransForm mytrans = new TransForm();
       mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
-      
+
       int num_layers = Network_List.size();
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
         Network net = this.Network_List.get(lcnt);
@@ -704,17 +707,17 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-  
+
   public static class TransForm {
-    
+
     public double xoffs = 0.0, yoffs = 0.0;
     public double xscale = 1.0, yscale = 1.0;
-    
+
     public void To_Screen(double xloc, double yloc, PointNd answer) {
       answer.loc[0] = xoffs + (xloc * xscale);
       answer.loc[1] = yoffs + (yloc * yscale);
     }
-    
+
     public void Accumulate(TransForm parent, double xoffsp, double yoffsp, double xscalep, double yscalep) {
       // create my local transform by adding local context to parent context
       // wrong code, just a place holder
@@ -727,9 +730,9 @@ public class Things {
     }
   }
   /* *************************************************************************************************** */
-  
+
   public static class Bounder {
-    
+
     double[][] minmax;// = new double[2][ndims];
 
     public Bounder(double rad, int ndims) {
@@ -739,39 +742,39 @@ public class Things {
         this.minmax[1][dcnt] = rad; //dimension max        
       }
     }
-    
+
     public double Wdt() {
       return minmax[1][0] - minmax[0][0];
     }
-    
+
     public double Hgt() {
       return minmax[1][1] - minmax[0][1];
     }
-    
+
     public double Dep() {
       return minmax[1][2] - minmax[0][2];
     }
-    
+
     public double Sz(int dim) {
       return minmax[1][dim] - minmax[0][dim];
     }
-    
+
     public double Rad(int dim) {
       return Sz(dim) / 2.0;
     }
-    
+
     public double CtrX() {
       return (minmax[1][0] + minmax[0][0]) / 2.0;
     }
-    
+
     public double CtrY() {
       return (minmax[1][1] + minmax[0][1]) / 2.0;
     }
-    
+
     public double CtrZ() {
       return (minmax[1][2] + minmax[0][2]) / 2.0;
     }
-    
+
     public double Ctr(int dim) {
       return (minmax[1][dim] + minmax[0][dim]) / 2.0;
     }
