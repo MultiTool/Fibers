@@ -256,6 +256,8 @@ public class Things {
 
   /* *************************************************************************************************** */
   public static class CPoint extends PointNd implements Drawable {/* Control Point */
+
+
     public CPoint[] US, DS;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
     double radius, diameter;
@@ -276,7 +278,15 @@ public class Things {
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
       gr.setColor(Color.red);
-      gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int)diameter, (int)diameter);
+      gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
+    }
+
+    public void Collect_And_Fire() {
+      int Num_Upstreamers = US.length;
+      for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
+        CPoint cpnt = this.US[pcnt];
+        // more goes here
+      }
     }
   }
   /* *************************************************************************************************** */
@@ -607,6 +617,14 @@ public class Things {
       this.Num_Us++;
       upstreamer.Num_Ds++;
     }
+
+    public void Collect_And_Fire() {
+      int Num_CPoints = this.CPoints.size();
+      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+        CPoint cpnt = this.CPoints.get(pcnt);
+        cpnt.Collect_And_Fire();
+      }
+    }
   }
   /* *************************************************************************************************** */
 
@@ -648,6 +666,14 @@ public class Things {
           NodeBox ds = this.Node_List.get(ncnt1);
           ds.ConnectIn(us);
         }
+      }
+    }
+
+    public void Collect_And_Fire() {
+      int num_my_nodes = this.Node_List.size();
+      for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
+        NodeBox nb = this.Node_List.get(ncnt1);
+        nb.Collect_And_Fire();
       }
     }
   }
@@ -703,6 +729,14 @@ public class Things {
          * 
          * 
          */
+      }
+    }
+
+    public void Collect_And_Fire() {
+      int num_layers = Network_List.size();
+      for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+        Network net = this.Network_List.get(lcnt);
+        net.Collect_And_Fire();
       }
     }
   }
