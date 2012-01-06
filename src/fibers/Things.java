@@ -223,6 +223,13 @@ public class Things {
 
     public void Draw_Me(TransForm tr, Graphics2D gr);
   }
+
+  public interface Causal {
+
+    void Collect_And_Fire();
+
+    void Pass_Back_Corrector();
+  }
   /* *************************************************************************************************** */
 
   public static class PlaneNd extends PointNd {
@@ -255,7 +262,7 @@ public class Things {
   }
 
   /* *************************************************************************************************** */
-  public static class CPoint extends PointNd implements Drawable {/* Control Point */
+  public static class CPoint extends PointNd implements Drawable, Causal {/* Control Point */
 
 
     public CPoint[] US, DS;
@@ -309,6 +316,9 @@ public class Things {
         // more to go here
       }
     }
+
+    public void Pass_Back_Corrector() {
+    }
   }
   /* *************************************************************************************************** */
 
@@ -346,7 +356,7 @@ public class Things {
   /* *************************************************************************************************** */
 
 
-  public static class NodeBox implements Drawable {
+  public static class NodeBox implements Drawable, Causal {
 
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
@@ -648,10 +658,18 @@ public class Things {
         cpnt.Collect_And_Fire();
       }
     }
+
+    public void Pass_Back_Corrector() {
+      int Num_CPoints = this.CPoints.size();
+      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+        CPoint cpnt = this.CPoints.get(pcnt);
+        cpnt.Pass_Back_Corrector();
+      }
+    }
   }
   /* *************************************************************************************************** */
 
-  public static class Network implements Drawable {
+  public static class Network implements Drawable, Causal {
 
     public ArrayList<NodeBox> Node_List;
     public double xorg, yorg;
@@ -699,10 +717,18 @@ public class Things {
         nb.Collect_And_Fire();
       }
     }
+
+    public void Pass_Back_Corrector() {
+      int num_my_nodes = this.Node_List.size();
+      for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
+        NodeBox nb = this.Node_List.get(ncnt1);
+        nb.Pass_Back_Corrector();
+      }
+    }
   }
   /* *************************************************************************************************** */
 
-  public static class Layers implements Drawable {
+  public static class Layers implements Drawable, Causal {
 
     public ArrayList<Network> Network_List;
     public double xorg, yorg;
@@ -760,6 +786,14 @@ public class Things {
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
         Network net = this.Network_List.get(lcnt);
         net.Collect_And_Fire();
+      }
+    }
+
+    public void Pass_Back_Corrector() {
+      int num_layers = Network_List.size();
+      for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+        Network net = this.Network_List.get(lcnt);
+        net.Pass_Back_Corrector();
       }
     }
   }
