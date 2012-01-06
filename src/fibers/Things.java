@@ -260,17 +260,19 @@ public class Things {
 
     public CPoint[] US, DS;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
+    PointNd attractor;
     double radius, diameter;
     public NodeBox Parent;
     /* *************************************************************************************************** */
 
     public CPoint(NodeBox NewParent, int num_dims) {
       super(num_dims);
+      attractor = new PointNd(num_dims);
       this.Parent = NewParent;
       for (int cnt = 0; cnt < num_dims; cnt++) {
         this.loc[cnt] = 0.5;
       }
-      US = new CPoint[2];
+      US = new CPoint[this.ninputs];
       DS = new CPoint[2];
       radius = 2.0;
       diameter = radius * 2.0;
@@ -281,6 +283,10 @@ public class Things {
       return this.loc[this.ninputs];
     }
 
+    public double Get_Outfire() {
+      return this.loc[this.ninputs];
+    }
+
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
       gr.setColor(Color.red);
@@ -288,12 +294,19 @@ public class Things {
     }
 
     public void Collect_And_Fire() {
+      NodeBox.Roto_Plane plane = this.Parent.planeform;
       double SumFire = 0.0;
       int Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
         CPoint cpnt = this.US[pcnt];
-        SumFire += cpnt.Get_Height();// no no no.  
-        // more goes here
+        double infire = cpnt.Get_Outfire();
+        /* for my attraction point, make a vector of all the upstreamers outfire values. */
+        attractor.loc[pcnt] = infire;
+        /*
+         * for sum outfire, mult each inlinks fire value by the tilt of our plane in that dimension. then add them.
+         * 
+         */
+        // more to go here
       }
     }
   }
