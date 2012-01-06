@@ -261,10 +261,12 @@ public class Things {
     public CPoint[] US, DS;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
     double radius, diameter;
+    public NodeBox Parent;
     /* *************************************************************************************************** */
 
-    public CPoint(int num_dims) {
+    public CPoint(NodeBox NewParent, int num_dims) {
       super(num_dims);
+      this.Parent = NewParent;
       for (int cnt = 0; cnt < num_dims; cnt++) {
         this.loc[cnt] = 0.5;
       }
@@ -299,10 +301,13 @@ public class Things {
 
   public static class CPoint_List extends ArrayList<CPoint> {
 
-    public CPoint_List(int newsize) {
+    public NodeBox Parent;
+
+    public CPoint_List(NodeBox NewParent, int newsize) {
+      this.Parent = NewParent;
       PointNd avg = new PointNd(ndims_init);
       for (int cnt = 0; cnt < newsize; cnt++) {
-        CPoint pnt = new CPoint(ndims_init);
+        CPoint pnt = new CPoint(this.Parent, ndims_init);
         pnt.Randomize(-1.0, 1.0);
         this.add(pnt);
       }
@@ -337,7 +342,7 @@ public class Things {
     public NodeBox() {
       xscale = yscale = 10.0;
       Num_Us = Num_Ds = 0;
-      CPoints = new CPoint_List(0);
+      CPoints = new CPoint_List(this, 0);
     }
     /* *************************************************************************************************** */
     public Roto_Plane planeform;
@@ -604,7 +609,7 @@ public class Things {
       CPoint cpnt;
       double amp = 1.0;
       for (int pcnt = 0; pcnt < num_states; pcnt++) {
-        cpnt = new CPoint(3);
+        cpnt = new CPoint(this, 3);
         cpnt.loc[0] = ((pcnt & 1) - 0.5) * amp;
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
         CPoints.add(cpnt);
