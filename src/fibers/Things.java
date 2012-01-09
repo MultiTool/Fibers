@@ -7,6 +7,7 @@ package fibers;
 import java.security.interfaces.DSAKey;
 import java.util.ArrayList;
 import java.awt.*;
+import javax.sound.midi.*;// MidiDevice;
 
 /**
  *
@@ -149,7 +150,7 @@ public class Things {
     public void CheckNAN() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (loc[cnt] != loc[cnt]) {
-          boolean noop = true;
+          boolean nop = true;
         }
       }
     }
@@ -157,7 +158,7 @@ public class Things {
     public void CheckInf() {
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (java.lang.Double.isInfinite(loc[cnt])) {
-          boolean noop = true;
+          boolean nop = true;
         }
       }
     }
@@ -170,11 +171,11 @@ public class Things {
       }
       //flat &= (pnt.loc[ninputs] != 0.0);
       if (flat) {
-        boolean noop = true;
+        boolean nop = true;
       }
       for (int cnt = 0; cnt < ndims; cnt++) {
         if (this.loc[cnt] == 1.0) {// orthogonality test
-          boolean noop = true;
+          boolean nop = true;
         }
       }
       return flat;
@@ -266,6 +267,7 @@ public class Things {
 
 
     public CPoint[] US, DS;
+    public double Corrector;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
     PointNd attractor;
     double radius, diameter;
@@ -301,6 +303,7 @@ public class Things {
     }
 
     public void Collect_And_Fire() {
+      Corrector = 0.0;
       NodeBox.Roto_Plane plane = this.Parent.planeform;
       double SumFire = 0.0;
       int Num_Upstreamers = US.length;
@@ -318,6 +321,25 @@ public class Things {
     }
 
     public void Pass_Back_Corrector() {
+      NodeBox.Roto_Plane plane = this.Parent.planeform;
+      /* First generate the corrector */
+      PointNd pdesire = new PointNd(this.ndims);
+      plane.Attract_Point(this, pdesire);
+      for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
+        CPoint upstreamer = this.US[pcnt];
+        upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+      }
+    }
+
+    public void Gather_Corrector(double goal) {
+      Corrector += goal;
+    }
+
+    public void Apply_Corrector() {
+      if (false) {
+        Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
+      }
+      this.loc[ninputs] = Corrector;
     }
   }
   /* *************************************************************************************************** */
@@ -418,7 +440,7 @@ public class Things {
       }
       /* *************************************************************************************************** */
 
-      public double sigmoid_deriv(double Value) { /* modified for default return  -dbr */
+      public static double sigmoid_deriv(double Value) { /* modified for default return  -dbr */
         /* Given the unit's activation value and sum of weighted inputs,
          *  compute the derivative of the activation with respect to the sum.
          *  Defined types are SIGMOID (-1 to +1) and ASYMSIGMOID (0 to +1).
@@ -441,7 +463,7 @@ public class Things {
         // corrector is the distance from the sigmoid plane TOWARD this point's height
         double corr = phgt - result;
 
-        double bell = this.sigmoid_deriv(phgt);
+        double bell = Roto_Plane.sigmoid_deriv(phgt);
         corr *= bell;
 
         // now create the recognition vector, based on this pnt's position, and 1.0 * this plane's height offset dimension
@@ -513,21 +535,14 @@ public class Things {
 
         PointNd nrm = new PointNd(ndims);
         this.Plane_Ramp_To_Normal(nrm);// get normal to raw plane.
-        if (true) {
+        {
           pdesire.Clear();
           pdesire.loc[ninputs] = delta_hgt;
           double corrlen = pdesire.Dot_Product(nrm);// project delta onto normal, to get straight distance to plane.
-          pdesire.Copy_From(nrm);// multiply unit normal by corrector length to get correction vector.
-          pdesire.Multiply(corrlen);
-        } else {
-          PointNd delta = new PointNd(ndims);// delta is the vector from the point to its place on the (sigmoid) plane
-          delta.loc[ninputs] = delta_hgt;
-          double corrlen = delta.Dot_Product(nrm);// project delta onto normal, to get straight distance to plane.
-          delta.Copy_From(nrm);// multiply unit normal by corrector length to get correction vector.
-          delta.Multiply(corrlen);
-          pdesire.Copy_From(delta);
+          nrm.Multiply(corrlen);// multiply unit normal by corrector length to get correction vector.
+          pdesire.Copy_From(nrm);
         }
-        double vfactor =0.0;// 0.09 * 0.3;// works better with 7 layers, and maybe 3
+        double vfactor = 0.0;// 0.09 * 0.3;// works better with 7 layers, and maybe 3
         pdesire.loc[ninputs] *= vfactor;
         // double jitamp = 0.0001; pdesire.Jitter(-jitamp, jitamp);
       }
