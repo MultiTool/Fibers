@@ -252,7 +252,7 @@ public class Things {
     }
     /* *************************************************************************************************** */
 
-    public void Plane_Ramp_To_Normal(PointNd norm) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
+    public void Plane_Ramp_To_Normal(PointNd norm) {// take the plane, and get the formula of the normal (x y z), with respect to z (or last dimension)
       for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
         norm.loc[dimcnt] = (-this.loc[dimcnt]);
       }
@@ -383,7 +383,6 @@ public class Things {
       int xorg, yorg;
       Bounder Bounds;
 
-
       /* *************************************************************************************************** */
       public Roto_Plane(int num_dims) {
         super(num_dims);
@@ -509,53 +508,28 @@ public class Things {
       public void Attract_Point(PointNd pnt, PointNd pdesire) {
         double shadow_hgt = this.Get_Height(pnt);// height on raw plane at this point's position.
         double sigmoid_shadow_hgt = this.ActFun(shadow_hgt);// height on sigmoid plane at this point's position.
-        //double sigmoid_shadow_hgt = this.Get_Sigmoid_Height(pnt);// height on sigmoid plane at this point's position.
-
         //sigmoid_shadow_hgt = shadow_hgt;
         double delta_hgt = sigmoid_shadow_hgt - pnt.loc[ninputs];// distance from this point to sigmoid plane.
 
         PointNd nrm = new PointNd(ndims);
         this.Plane_Ramp_To_Normal(nrm);// get normal to raw plane.
-        nrm.Unitize();
-        PointNd delta = new PointNd(ndims);// delta is the vector from the point to its place on the (sigmoid) plane
-        delta.loc[ninputs] = delta_hgt;
-        double corrlen = delta.Dot_Product(nrm);// project delta onto normal, to get straight distance to plane.
-        delta.Copy_From(nrm);// multiply unit normal by corrector length to get correction vector.
-        delta.Multiply(corrlen);
-        pdesire.Copy_From(delta);
-        if (false) {// flee the centroid
-          delta.Copy_From(pnt);
-          delta.Subtract(running_avg);
-          if (delta.Magnitude(ninputs) <= 0.7) {
-            delta.Multiply(0.01);
-            delta.loc[ninputs] = 0.0;
-            pdesire.Add(delta);
-          }
+        if (true) {
+          pdesire.Clear();
+          pdesire.loc[ninputs] = delta_hgt;
+          double corrlen = pdesire.Dot_Product(nrm);// project delta onto normal, to get straight distance to plane.
+          pdesire.Copy_From(nrm);// multiply unit normal by corrector length to get correction vector.
+          pdesire.Multiply(corrlen);
+        } else {
+          PointNd delta = new PointNd(ndims);// delta is the vector from the point to its place on the (sigmoid) plane
+          delta.loc[ninputs] = delta_hgt;
+          double corrlen = delta.Dot_Product(nrm);// project delta onto normal, to get straight distance to plane.
+          delta.Copy_From(nrm);// multiply unit normal by corrector length to get correction vector.
+          delta.Multiply(corrlen);
+          pdesire.Copy_From(delta);
         }
-        if (false) {// flee the crack
-          PointNd steep = new PointNd(ndims);
-          normal.Get_Steepest(steep);
-          steep.loc[ninputs] = 0;
-          steep.Unitize();
-          double sgn = Math.signum(pnt.loc[ninputs]);
-          steep.Multiply(sgn);
-          steep.Multiply(0.001);
-          pdesire.Add(steep);
-        }
-        double range = Math.abs(this.rangemax - this.rangemin);
-        double unitrange = (2.0 - range) / 2.0;// is the range as 0 to 1.0
-        double finalrange = (0.9 * unitrange) + 0.1;//  this way the flattest ranges have the strongest self-inspired vertical attraction.
-
-        double vfactor = finalrange;
-        vfactor = 0.8;// works better with 2 layers
-        vfactor = 0.09;// works better with 7 layers, and maybe 3
-        //vfactor = 0.07;// test with 7
-        vfactor *= 0.3;
+        double vfactor =0.0;// 0.09 * 0.3;// works better with 7 layers, and maybe 3
         pdesire.loc[ninputs] *= vfactor;
-
-        double jitamp = 0.0001;
-        pdesire.Jitter(-jitamp, jitamp);
-        //pdesire.loc[ninputs] = 0.0;
+        // double jitamp = 0.0001; pdesire.Jitter(-jitamp, jitamp);
       }
       /* *************************************************************************************************** */
 
@@ -875,12 +849,15 @@ public class Things {
   is there any harm in only applying correctors to *one* of the nodes in the output layer?
   we could also just make the one last node.  probably easiest.
    * 
-   * every CPoint must have a fire value, its last dimension.
+   * cycle:
+  find cpoint vector of attraction to plane
+  tell upstreamer cpoint heights to go there, they adjust
+  upstreamer cpoint tells me to go there
+  find vector of attraction to plane again
    * 
-   * every nodebox must have a plane.
    * 
-  we need graphic output early on.
-   * 
+   * What next? 
+   * get rotoplane working.
    * 
    */
 }
