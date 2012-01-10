@@ -34,6 +34,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     g2.clearRect(0, 0, this.getWidth(), this.getHeight());
     Things.TransForm tr = new Things.TransForm();
     lay.Draw_Me(tr, g2);
+    lay.Pass_Back_Corrector();
   }
   /* *************************************************************************************************** */
 

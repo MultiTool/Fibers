@@ -243,7 +243,12 @@ public class Things {
 
     public double Get_Height(PointNd pnt) {
       // get the height of this plane, at this point's coordinates
-      double plane_hgt = this.loc[ninputs];// last dimension holds height offset
+      double plane_hgt = 0;
+      try {
+        plane_hgt = this.loc[ninputs];// last dimension holds height offset
+      } catch (Exception e) {
+        boolean nop = true;
+      }
       double height = 0.0;
       for (int dim = 0; dim < ninputs; dim++) {
         height += (pnt.loc[dim] * this.loc[dim]);// multiply each axis length by the slope for that axis
@@ -382,15 +387,16 @@ public class Things {
 
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
+    public Roto_Plane planeform;
     public double xorg, yorg, xscale, yscale;
 
     public NodeBox() {
       xscale = yscale = 10.0;
       Num_Us = Num_Ds = 0;
       CPoints = new CPoint_List(this, 0);
+      planeform = new Roto_Plane(0);
     }
     /* *************************************************************************************************** */
-    public Roto_Plane planeform;
 
     public static class Roto_Plane extends PlaneNd {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
@@ -638,6 +644,7 @@ public class Things {
       }
       this.Num_Us++;
       upstreamer.Num_Ds++;
+      planeform = new Roto_Plane(this.Num_Us + 1);// kludge.  
     }
 
     public void Collect_And_Fire() {
@@ -780,9 +787,17 @@ public class Things {
 
     public void Pass_Back_Corrector() {
       int num_layers = Network_List.size();
-      for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+
+      int last_layer = num_layers - 1;
+      for (int lcnt = last_layer; lcnt >= 0; lcnt--) {
         Network net = this.Network_List.get(lcnt);
         net.Pass_Back_Corrector();
+      }
+      if (false) {
+        for (int lcnt = 0; lcnt < num_layers; lcnt++) {
+          Network net = this.Network_List.get(lcnt);
+          net.Pass_Back_Corrector();
+        }
       }
     }
   }
@@ -873,6 +888,8 @@ public class Things {
    * 
    * What next? 
    * get rotoplane working.
+   * 
+   * need to make special case for input nodes.
    * 
    */
 }
