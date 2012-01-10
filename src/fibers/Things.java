@@ -709,7 +709,7 @@ public class Things {
       }
       for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
         NodeBox ds = this.Node_List.get(ncnt1);
-        //ds.Init_States(4);
+        //ds.Init_States(4);// must rethink this
         ds.Init_States(1 << ds.Num_Us);// wrong wrong wrong
       }
     }
