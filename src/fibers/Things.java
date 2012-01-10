@@ -332,7 +332,11 @@ public class Things {
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
         CPoint upstreamer = this.US[pcnt];
-        upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+        try {
+          upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+        } catch (Exception e) {
+          boolean nop = true;
+        }
       }
     }
 
@@ -394,7 +398,7 @@ public class Things {
       xscale = yscale = 10.0;
       Num_Us = Num_Ds = 0;
       CPoints = new CPoint_List(this, 0);
-      planeform = new Roto_Plane(0);
+      planeform = new Roto_Plane(3);
     }
     /* *************************************************************************************************** */
 
@@ -644,7 +648,7 @@ public class Things {
       }
       this.Num_Us++;
       upstreamer.Num_Ds++;
-      planeform = new Roto_Plane(this.Num_Us + 1);// kludge.  
+      //planeform = new Roto_Plane(this.Num_Us + 1);// kludge.  
     }
 
     public void Collect_And_Fire() {
@@ -686,7 +690,6 @@ public class Things {
     public void Make_Layer(int num_nodes) {
       for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
         NodeBox nb = new NodeBox();
-        nb.Init_States(4);
         nb.xorg = (ncnt + 1.0) * 50.0;
         Node_List.add(nb);
       }
@@ -703,6 +706,11 @@ public class Things {
           NodeBox ds = this.Node_List.get(ncnt1);
           ds.ConnectIn(us);
         }
+      }
+      for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
+        NodeBox ds = this.Node_List.get(ncnt1);
+        //ds.Init_States(4);
+        ds.Init_States(1 << ds.Num_Us);// wrong wrong wrong
       }
     }
 
