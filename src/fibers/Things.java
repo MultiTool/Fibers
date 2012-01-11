@@ -327,19 +327,19 @@ public class Things {
 
     public void Pass_Back_Corrector() {
       NodeBox.Roto_Plane plane = this.Parent.planeform;
-      if (this.Parent.Num_Us > 0) {// hack
+      //if (this.Parent.Num_Us > 0) {// hack
         /* First generate the corrector */
-        PointNd pdesire = new PointNd(this.ndims);
-        plane.Attract_Point(this, pdesire);
-        for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
-          CPoint upstreamer = this.US[pcnt];
-          try {
-            upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
-          } catch (Exception e) {
-            boolean nop = true;
-          }
+      PointNd pdesire = new PointNd(this.ndims);
+      plane.Attract_Point(this, pdesire);
+      for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
+        CPoint upstreamer = this.US[pcnt];
+        try {
+          upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+        } catch (Exception e) {
+          boolean nop = true;
         }
       }
+      //}
     }
 
     public void Gather_Corrector(double goal) {
@@ -662,10 +662,12 @@ public class Things {
     }
 
     public void Pass_Back_Corrector() {
-      int Num_CPoints = this.CPoints.size();
-      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
-        CPoint cpnt = this.CPoints.get(pcnt);
-        cpnt.Pass_Back_Corrector();
+      if (this.Num_Us > 0) {// hack
+        int Num_CPoints = this.CPoints.size();
+        for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+          CPoint cpnt = this.CPoints.get(pcnt);
+          cpnt.Pass_Back_Corrector();
+        }
       }
     }
   }
