@@ -303,7 +303,7 @@ public class Things {
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
-      gr.setColor(Color.red);
+      gr.setColor(Color.red); // need to add code to xmap color here
       gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
     }
 
@@ -344,6 +344,9 @@ public class Things {
 
     public void Gather_Corrector(double goal) {
       Corrector += goal;
+      if (Corrector != 0.0) {
+        boolean nop = true;
+      }
     }
 
     public void Apply_Corrector() {
@@ -640,6 +643,16 @@ public class Things {
       }
     }
 
+    public void Init_Xor() {
+      double amp = 2.0;
+      int num_pnts = this.CPoints.size();
+      for (int pcnt = 0; pcnt < num_pnts; pcnt++) {
+        CPoint cpnt = this.CPoints.get(pcnt);
+        int xorval = (pcnt & 1) ^ ((pcnt >> 1) & 1);
+        cpnt.loc[cpnt.ninputs] = (((double) xorval) - 0.5) * amp;
+      }
+    }
+
     public void ConnectIn(NodeBox upstreamer) {
       int Num_CPoints = upstreamer.CPoints.size();
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
@@ -697,6 +710,14 @@ public class Things {
         nb.Init_States(4);// must rethink this
         nb.xorg = (ncnt + 1.0) * 50.0;
         Node_List.add(nb);
+      }
+    }
+
+    public void Init_Xor() {
+      int num_nodes = this.Node_List.size();
+      for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
+        NodeBox nb = new NodeBox();
+        nb.Init_Xor();
       }
     }
 
@@ -762,6 +783,11 @@ public class Things {
         net.Connect_From_Other(net_prev);
         net_prev = net;
       }
+      /*
+       * In the last layer, we want to set the desired output heights
+       */
+      Network net_last = this.Network_List.get(this.Network_List.size() - 1);
+      net_last.Init_Xor();
     }
     /* *************************************************************************************************** */
 
