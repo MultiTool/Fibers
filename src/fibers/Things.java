@@ -327,15 +327,17 @@ public class Things {
 
     public void Pass_Back_Corrector() {
       NodeBox.Roto_Plane plane = this.Parent.planeform;
-      /* First generate the corrector */
-      PointNd pdesire = new PointNd(this.ndims);
-      plane.Attract_Point(this, pdesire);
-      for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
-        CPoint upstreamer = this.US[pcnt];
-        try {
-          upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
-        } catch (Exception e) {
-          boolean nop = true;
+      if (this.Parent.Num_Us > 0) {// hack
+        /* First generate the corrector */
+        PointNd pdesire = new PointNd(this.ndims);
+        plane.Attract_Point(this, pdesire);
+        for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
+          CPoint upstreamer = this.US[pcnt];
+          try {
+            upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+          } catch (Exception e) {
+            boolean nop = true;
+          }
         }
       }
     }
@@ -690,6 +692,7 @@ public class Things {
     public void Make_Layer(int num_nodes) {
       for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
         NodeBox nb = new NodeBox();
+        nb.Init_States(4);// must rethink this
         nb.xorg = (ncnt + 1.0) * 50.0;
         Node_List.add(nb);
       }
@@ -710,7 +713,7 @@ public class Things {
       for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
         NodeBox ds = this.Node_List.get(ncnt1);
         //ds.Init_States(4);// must rethink this
-        ds.Init_States(1 << ds.Num_Us);// wrong wrong wrong
+        //ds.Init_States(1 << ds.Num_Us);// wrong wrong wrong
       }
     }
 
