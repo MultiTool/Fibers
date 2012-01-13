@@ -303,8 +303,32 @@ public class Things {
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       tr.To_Screen(this.loc[0], this.loc[1], screenloc);
-      gr.setColor(Color.red); // need to add code to xmap color here
+
+      float pntband = (float) ((this.loc[ninputs] + 1.0) / 2.0);// map to range 0.0 - 1.0
+      float red = pntband, blue = (float) 1.0 - pntband;
+      blue = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
+      red = red < 0 ? 0 : (red > 1 ? 1 : red);
+      Color pnt_color = new Color(red, 0.0f, blue);
+
+      gr.setColor(pnt_color); // need to add code to xmap color here
       gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
+      
+      gr.setColor(Color.black);
+      gr.drawRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
+      
+      /*
+      {
+      if (true) {
+      double factor = 100.0;
+      gr.setColor(Color.magenta); * draw the movement line *
+      gr.drawLine(
+      (int) (xorg + Bounds.Rad(0) * pnt.loc[0]),
+      (int) (yorg + Bounds.Rad(1) * pnt.loc[1]),
+      (int) (xorg + Bounds.Rad(0) * (pnt.loc[0] + pnt.delta[0] * factor)),
+      (int) (yorg + Bounds.Rad(1) * (pnt.loc[1] + pnt.delta[1] * factor)));
+      }
+      }
+       */
     }
 
     public void Collect_And_Fire() {
@@ -716,7 +740,7 @@ public class Things {
     public void Init_Xor() {
       int num_nodes = this.Node_List.size();
       for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
-        NodeBox nb = new NodeBox();
+        NodeBox nb = this.Node_List.get(ncnt);
         nb.Init_Xor();
       }
     }
