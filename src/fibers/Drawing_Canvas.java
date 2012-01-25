@@ -55,6 +55,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
   public void run() {
     while (keeprunning) {
       boolean nop = true;
+      lay.RunCycle();
       System.out.println(nop);
     }
   }

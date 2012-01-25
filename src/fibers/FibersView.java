@@ -39,7 +39,7 @@ public class FibersView extends FrameView {
 
       Blob_Panel.setVisible(true);
       //Blob_Panel.repaint();
-      //Blob_Panel.start();
+      Blob_Panel.start();
 
       JFrame mainFrame = FibersApp.getApplication().getMainFrame();
       mainFrame.pack();

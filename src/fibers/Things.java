@@ -312,10 +312,10 @@ public class Things {
 
       gr.setColor(pnt_color); // need to add code to xmap color here
       gr.fillRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
-      
+
       gr.setColor(Color.black);
       gr.drawRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
-      
+
       /*
       {
       if (true) {
@@ -502,7 +502,7 @@ public class Things {
         // corrector is the distance from the sigmoid plane TOWARD this point's height
         double corr = phgt - result;
 
-        double bell = Roto_Plane.sigmoid_deriv(phgt);
+        double bell = Roto_Plane.sigmoid_deriv(phgt);// sigmoid derivative is a bell curve 
         corr *= bell;
 
         // now create the recognition vector, based on this pnt's position, and 1.0 * this plane's height offset dimension
@@ -707,6 +707,14 @@ public class Things {
         }
       }
     }
+
+    public void Ping() {
+      int Num_CPoints = this.CPoints.size();
+      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+        CPoint cpnt = this.CPoints.get(pcnt);
+        this.planeform.Ping(cpnt);
+      }
+    }
   }
   /* *************************************************************************************************** */
 
@@ -777,6 +785,7 @@ public class Things {
       for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
         NodeBox nb = this.Node_List.get(ncnt1);
         nb.Pass_Back_Corrector();
+        nb.Ping();
       }
     }
   }
@@ -862,6 +871,10 @@ public class Things {
           net.Pass_Back_Corrector();
         }
       }
+    }
+
+    public void RunCycle() {
+      this.Pass_Back_Corrector();
     }
   }
   /* *************************************************************************************************** */
