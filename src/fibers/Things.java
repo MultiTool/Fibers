@@ -431,7 +431,7 @@ public class Things {
     }
     /* *************************************************************************************************** */
 
-    public static class Roto_Plane extends PlaneNd {
+    public static class Roto_Plane extends PlaneNd implements Drawable {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
 
       private PointNd pingvec;
@@ -601,7 +601,13 @@ public class Things {
       /* *************************************************************************************************** */
 
 
-      public void Plot_Gradient(Graphics2D g2) {
+      public void Draw_Me(TransForm tr, Graphics2D gr) {
+        TransForm mytrans = new TransForm();
+        mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
+        Plot_Gradient(tr, gr);
+      }
+
+      public void Plot_Gradient(TransForm tr, Graphics2D g2) {
         /* all about the gradient for display */
         double hgt = this.loc[0];
         double grad_x0;
@@ -963,7 +969,7 @@ public class Things {
    * 
    * 
    * What next? 
-   * get rotoplane working.
+   * plot rotoplane gradient for diagnostics.
    * 
    * need to make special case for input nodes.
    * 
