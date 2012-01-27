@@ -623,7 +623,7 @@ public class Things {
           double offset = this.loc[ninputs];
           double height0 = -1.0 - offset;
           double height1 = 1.0 - offset;
-          double brad = Bounds.Rad(ninputs);
+          double brad = tr.xscale;// Bounds.Rad(ninputs);
           //gradx0 = (int) (brad * (height0 * ratios[0])); grad_y0 = (int) (brad * (height0 * ratios[1])); grad_x1 = (int) (brad * (height1 * ratios[0])); grad_y1 = (int) (brad * (height1 * ratios[1]));
           height0 *= brad;
           height1 *= brad;
@@ -657,6 +657,8 @@ public class Things {
       gr.setColor(Color.green);
       gr.drawRect((int) (boxmin.loc[0]), (int) (boxmin.loc[1]), (int) (boxmax.loc[0] - boxmin.loc[0]), (int) (boxmax.loc[1] - boxmin.loc[1]));
 
+      this.planeform.Draw_Me(mytrans, gr);
+      
       for (CPoint cpnt : CPoints) {
         cpnt.Draw_Me(mytrans, gr);
       }
