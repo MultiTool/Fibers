@@ -424,7 +424,7 @@ public class Things {
     public double xorg, yorg, xscale, yscale;
 
     public NodeBox() {
-      xscale = yscale = 10.0;
+      xscale = yscale = 20.0;
       Num_Us = Num_Ds = 0;
       CPoints = new CPoint_List(this, 0);
       planeform = new Roto_Plane(3);
@@ -638,9 +638,20 @@ public class Things {
         GradientPaint gradient;
         gradient = new GradientPaint(xorg + (int) grad_x0, yorg + (int) grad_y0, startColor, xorg + (int) grad_x1, yorg + (int) grad_y1, endColor);// A non-cyclic gradient
         g2.setPaint(gradient);
-        g2.fillRect(xorg + (int) Bounds.minmax[0][0], yorg + (int) Bounds.minmax[0][1], (int) Bounds.Wdt(), (int) Bounds.Hgt());
-        g2.setColor(Color.white);
-        g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
+
+        if (true) {
+          int rxorg = (int) (tr.xoffs - tr.xscale);
+          int ryorg = (int) (tr.yoffs - tr.yscale);
+          int rwdt = (int) (2.0 * tr.xscale);
+          int rhgt = (int) (2.0 * tr.yscale);
+          g2.fillRect(rxorg, ryorg, rwdt, rhgt);
+          g2.setColor(Color.white);
+          g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
+        } else {
+          g2.fillRect(xorg + (int) Bounds.minmax[0][0], yorg + (int) Bounds.minmax[0][1], (int) Bounds.Wdt(), (int) Bounds.Hgt());
+          g2.setColor(Color.white);
+          g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
+        }
       }
     }
 
@@ -658,7 +669,7 @@ public class Things {
       gr.drawRect((int) (boxmin.loc[0]), (int) (boxmin.loc[1]), (int) (boxmax.loc[0] - boxmin.loc[0]), (int) (boxmax.loc[1] - boxmin.loc[1]));
 
       this.planeform.Draw_Me(mytrans, gr);
-      
+
       for (CPoint cpnt : CPoints) {
         cpnt.Draw_Me(mytrans, gr);
       }
