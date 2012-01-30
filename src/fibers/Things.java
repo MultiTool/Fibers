@@ -204,7 +204,7 @@ public class Things {
     public void Get_Steepest(PointNd steep) {// get the steepest line on a plane with respect to Z by rotating its normal 90 degrees.
       steep.Clear();
       double vertical = this.loc[ninputs]; // last dimension is the output 'Z' dim.
-      double floorpotenuse = 0.0;// first get the floorpotenuse
+      double floorpotenuse = 0.0;// first get the floorpotenuse, length of my shadow on floor
       for (int cnt = 0; cnt < ninputs; cnt++) {
         double axis = this.loc[cnt];
         floorpotenuse += axis * axis;
@@ -433,13 +433,12 @@ public class Things {
 
     public static class Roto_Plane extends PlaneNd implements Drawable {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
-
       private PointNd pingvec;
       public double rangemin, rangectr, rangemax;
       PointNd running_avg = new PointNd(ndims);
       public double above, below;
-      PointNd normal = new PointNd(ndims_init);
-      PointNd desire = new PointNd(ndims_init);
+      PointNd normal = null;
+      PointNd desire = null;
       /* These values below should come from NodeBox context! */
       int xorg, yorg;
       Bounder Bounds;
@@ -453,6 +452,8 @@ public class Things {
         rangemax = 1.0;
         above = 0.0;
         below = 0.0;
+        normal = new PointNd(ndims);
+        desire = new PointNd(ndims);
       }
       /* *************************************************************************************************** */
 
@@ -615,6 +616,11 @@ public class Things {
         double grad_x1, grad_y1;
         PointNd steepest = new PointNd(ndims);
         normal.Get_Steepest(steepest);
+        if (normal.loc.length > 1) {
+          boolean nop = true;
+        }else{
+          boolean nop = true;
+        }
         double[] ratios = new double[ninputs];// the ratios are NOT the inverse slopes.  they are from the steepest line.
         for (int cnt = 0; cnt < ninputs; cnt++) {
           ratios[cnt] = steepest.loc[cnt] / steepest.loc[ninputs];// inverse slope for each shadow of the steepest
