@@ -454,6 +454,7 @@ public class Things {
         below = 0.0;
         normal = new PointNd(ndims);
         desire = new PointNd(ndims);
+        this.Randomize(-0.1, 0.1);
       }
       /* *************************************************************************************************** */
 
@@ -610,6 +611,7 @@ public class Things {
 
       public void Plot_Gradient(TransForm tr, Graphics2D g2) {
         /* all about the gradient for display */
+        this.Plane_Ramp_To_Normal(normal);
         double hgt = this.loc[0];
         double grad_x0;
         double grad_y0;
