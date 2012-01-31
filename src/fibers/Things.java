@@ -971,9 +971,6 @@ public class Things {
   }
   /* *************************************************************************************************** */
   /* 
-  is there any harm in only applying correctors to *one* of the nodes in the output layer?
-  we could also just make the one last node.  probably easiest.
-   * 
    * cycle:
   find cpoint vector of attraction to plane
   tell upstreamer cpoint heights to go there, they adjust
@@ -982,8 +979,10 @@ public class Things {
    * 
    * 
    * What next? 
-   * plot rotoplane gradient for diagnostics.
-   * 
+   * cpoints ping plane to bend it.
+   * cpoints pass back their desires.
+   * when cpoints receive adjustment now, they must apply it to their heights.
+   * no fire forward yet.  when cpoints fire forward, the downstreamer must move its location to match heights of inputs.
    * need to make special case for input nodes.
    * 
    */
