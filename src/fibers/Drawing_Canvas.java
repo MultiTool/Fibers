@@ -38,13 +38,14 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     if (false) {
       lay.Pass_Back_Corrector();
     }
+    this.repaint();// flickery animation. probably need thread locking
   }
-
   /* *************************************************************************************************** */
   public void onShutdown() {
     // attempting to find a way to grab window closing event
     JFrame mainFrame = FibersApp.getApplication().getMainFrame();
     mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+
       @Override
       public void windowClosing(java.awt.event.WindowEvent e) {
         System.out.println("good bye");
@@ -54,13 +55,13 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     });
     /*
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-      @Override
-      public void run() {
-        //Do the onShutdown stuff here.
-        boolean nop = true;
-      }
+    @Override
+    public void run() {
+    //Do the onShutdown stuff here.
+    boolean nop = true;
+    }
     }));
-    */
+     */
   }
   /* *************************************************************************************************** */
 

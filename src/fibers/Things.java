@@ -693,6 +693,7 @@ public class Things {
         cpnt = new CPoint(this, 3);
         cpnt.loc[0] = ((pcnt & 1) - 0.5) * amp;
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
+        cpnt.loc[2] = cpnt.loc[0] + cpnt.loc[1];
         CPoints.add(cpnt);
       }
     }
@@ -983,6 +984,9 @@ public class Things {
    * cpoints pass back their desires.
    * when cpoints receive adjustment now, they must apply it to their heights.
    * no fire forward yet.  when cpoints fire forward, the downstreamer must move its location to match heights of inputs.
+   * 
+   * repaint automatically.
+   * 
    * need to make special case for input nodes.
    * 
    */
