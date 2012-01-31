@@ -433,6 +433,7 @@ public class Things {
 
     public static class Roto_Plane extends PlaneNd implements Drawable {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
+
       private PointNd pingvec;
       public double rangemin, rangectr, rangemax;
       PointNd running_avg = new PointNd(ndims);
@@ -454,7 +455,8 @@ public class Things {
         below = 0.0;
         normal = new PointNd(ndims);
         desire = new PointNd(ndims);
-        this.Randomize(-0.1, 0.1);
+        //this.Randomize(-0.1, 0.1);
+        this.loc[0] = 1.0;
       }
       /* *************************************************************************************************** */
 
@@ -620,7 +622,7 @@ public class Things {
         normal.Get_Steepest(steepest);
         if (normal.loc.length > 1) {
           boolean nop = true;
-        }else{
+        } else {
           boolean nop = true;
         }
         double[] ratios = new double[ninputs];// the ratios are NOT the inverse slopes.  they are from the steepest line.
@@ -644,7 +646,8 @@ public class Things {
         Color endColor = new Color(1.0f, 0.0f, 0.0f);//Color endColor = Color.red;
 
         GradientPaint gradient;
-        gradient = new GradientPaint(xorg + (int) grad_x0, yorg + (int) grad_y0, startColor, xorg + (int) grad_x1, yorg + (int) grad_y1, endColor);// A non-cyclic gradient
+
+        gradient = new GradientPaint((int) (tr.xoffs + grad_x0), (int) (tr.yoffs + grad_y0), startColor, (int) (tr.xoffs + grad_x1), (int) (tr.yoffs + grad_y1), endColor);// A non-cyclic gradient
         g2.setPaint(gradient);
 
         if (true) {
@@ -654,7 +657,7 @@ public class Things {
           int rhgt = (int) (2.0 * tr.yscale);
           g2.fillRect(rxorg, ryorg, rwdt, rhgt);
           g2.setColor(Color.white);
-          g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
+          g2.drawLine((int) (tr.xoffs + grad_x0), (int) (tr.yoffs + grad_y0), (int) (tr.xoffs + grad_x1), (int) (tr.yoffs + grad_y1));
         } else {
           g2.fillRect(xorg + (int) Bounds.minmax[0][0], yorg + (int) Bounds.minmax[0][1], (int) Bounds.Wdt(), (int) Bounds.Hgt());
           g2.setColor(Color.white);
@@ -861,17 +864,6 @@ public class Things {
         Network net = this.Network_List.get(lcnt);
         net.Draw_Me(mytrans, gr);
         /*
-         * so the question is how to put one drawing transform (at least offset) within another
-         * pass coords live-time?
-         * 
-         * we want this to be simple.  so every layer has an org, every nodebox has a relaive org
-         * inside the layer.  every cpoint has a relative org inside the nodebox.
-         * 
-         * maybe just pass the org offset as an object to the children in all draw_me calls?  yep.
-         * 
-         * everybody needs to think in their local coords.  
-         * 
-         * 
          */
       }
     }
