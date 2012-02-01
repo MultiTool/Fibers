@@ -377,7 +377,9 @@ public class Things {
       if (false) {
         Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
       }
+      // this is all wrong.  
       this.loc[ninputs] = Corrector;
+      compileboom();// fix all this junk.
     }
   }
   /* *************************************************************************************************** */
@@ -739,6 +741,14 @@ public class Things {
       }
     }
 
+    public void Apply_Corrector() {
+      int Num_CPoints = this.CPoints.size();
+      for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+        CPoint cpnt = this.CPoints.get(pcnt);
+        cpnt.Apply_Corrector();
+      }
+    }
+
     public void Ping() {
       int Num_CPoints = this.CPoints.size();
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
@@ -819,6 +829,14 @@ public class Things {
         nb.Ping();
       }
     }
+
+    public void Apply_Corrector() {
+      int num_my_nodes = this.Node_List.size();
+      for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
+        NodeBox nb = this.Node_List.get(ncnt1);
+        nb.Apply_Corrector();
+      }
+    }
   }
   /* *************************************************************************************************** */
 
@@ -893,8 +911,18 @@ public class Things {
       }
     }
 
+    public void Apply_Corrector() {
+      int num_layers = Network_List.size();
+      int last_layer = num_layers - 1;
+      for (int lcnt = last_layer; lcnt >= 0; lcnt--) {
+        Network net = this.Network_List.get(lcnt);
+        net.Apply_Corrector();
+      }
+    }
+
     public void RunCycle() {
       this.Pass_Back_Corrector();
+      this.Apply_Corrector();
     }
   }
   /* *************************************************************************************************** */
