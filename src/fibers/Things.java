@@ -374,11 +374,11 @@ public class Things {
     }
 
     public void Apply_Corrector() {
-      if (false) {
+      if (true) {
         Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
       }
       // this is all wrong.  
-      this.loc[ninputs] = Corrector;
+      this.loc[ninputs] += Corrector;
       compileboom();// fix all this junk.
     }
   }
