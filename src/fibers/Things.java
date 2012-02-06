@@ -374,12 +374,16 @@ public class Things {
     }
 
     public void Apply_Corrector() {
-      if (true) {
+      if (false) {
         Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
       }
       // this is all wrong.  
       this.loc[ninputs] += Corrector;
       compileboom();// fix all this junk.
+      /*
+       * things to change:
+       * only apply deriv when collecting correctors backward
+       */
     }
   }
   /* *************************************************************************************************** */
@@ -437,9 +441,6 @@ public class Things {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
 
       private PointNd pingvec;
-      public double rangemin, rangectr, rangemax;
-      PointNd running_avg = new PointNd(ndims);
-      public double above, below;
       PointNd normal = null;
       PointNd desire = null;
       /* These values below should come from NodeBox context! */
@@ -517,32 +518,6 @@ public class Things {
         }
         pingvec.loc[ninputs] = 1.0;
         Train_Inlinks(pingvec, ndims, 0.01, corr);
-
-        double pdrop = (phgt * 0.1);
-        this.rangectr = (this.rangectr * 0.9) + pdrop;
-        if (true) {
-          this.rangemax = ((this.rangemax - this.rangectr) * 0.9) + this.rangectr;
-          this.rangemin = ((this.rangemin - this.rangectr) * 0.9) + this.rangectr;
-          if (phgt < this.rangemin) {
-            this.rangemin = phgt;
-          }
-          if (phgt > this.rangemax) {
-            this.rangemax = phgt;
-          }
-        }
-        /* keep an approximate centroid for the cloud of points that hit me */
-        for (int cnt = 0; cnt < ninputs; cnt++) {
-          running_avg.loc[cnt] *= 0.9;
-          running_avg.loc[cnt] += 0.1 * pnt.loc[cnt];
-        }
-        above *= 0.9;
-        below *= 0.9;
-        if (pnt.loc[ninputs] > 0.0) {
-          above += 0.1;
-        } else if (pnt.loc[ninputs] < 0.0) {
-          below += 0.1;
-        }
-        //this.Balance();
       }
       /* *************************************************************************************************** */
 
