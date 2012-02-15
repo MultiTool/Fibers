@@ -451,11 +451,6 @@ public class Things {
       public Roto_Plane(int num_dims) {
         super(num_dims);
         pingvec = new PointNd(ndims);
-        rangemin = -1.0;
-        rangectr = 0.0;
-        rangemax = 1.0;
-        above = 0.0;
-        below = 0.0;
         normal = new PointNd(ndims);
         desire = new PointNd(ndims);
         //this.Randomize(-0.1, 0.1);
@@ -525,25 +520,6 @@ public class Things {
         double hgt = this.Get_Height(pnt);
         hgt = this.ActFun(hgt);
         return hgt;
-      }
-      /* *************************************************************************************************** */
-
-      public void Balance() {
-        double sub_ratio = above;// ratio of above-zero to total
-        if (sub_ratio < 0.25 || 0.75 < sub_ratio) {
-          double midval = this.Get_Sigmoid_Height(running_avg);
-          double corr = 0.0 - midval;
-          // whoops, need to make average be like pingvec, for the training
-          running_avg.loc[ninputs] = 1.0;
-          Train_Inlinks(running_avg, ndims, 0.1, corr);// was lrate of 0.01
-        }
-        if (false) {// another experiment, try to flatten the plane.
-          for (int cnt = 0; cnt < ninputs; cnt++) {
-            if (Math.abs(this.loc[cnt]) > 0.7) {
-              this.loc[cnt] *= 0.999;
-            }
-          }
-        }
       }
       /* *************************************************************************************************** */
 
