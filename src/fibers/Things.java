@@ -16,7 +16,9 @@ import javax.sound.midi.*;// MidiDevice;
 public class Things {
 
   public static int ndims_init = 1;// 3 dimensions.  First dimension is a gimme, becuase it is the output/fire value.
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class PointNd {
 
@@ -90,7 +92,9 @@ public class Things {
         sumsq += loc[cnt] * loc[cnt];
       }
       return sumsq;
-    }/* Magnitude_Squared */
+    }/*
+     * Magnitude_Squared
+     */
 
 
     public void Get_Delta(PointNd other, int dimensions, PointNd pdelta) {
@@ -162,7 +166,9 @@ public class Things {
         }
       }
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public boolean CheckVert() {
       boolean flat = true;
@@ -180,7 +186,9 @@ public class Things {
       }
       return flat;
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Get_Cross_Product(PointNd a, PointNd b) {
       this.Clear();
@@ -188,7 +196,9 @@ public class Things {
       this.loc[1] = (a.loc[2] * b.loc[0] - a.loc[0] * b.loc[2]);
       this.loc[2] = (a.loc[0] * b.loc[1] - a.loc[1] * b.loc[0]);
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Normal_To_Plane(PointNd plane) {// take the normal, and get the formula of the plane (x y z), with respect to z (or last dimension)
       double height = this.loc[ninputs];
@@ -199,7 +209,9 @@ public class Things {
         plane.loc[dimcnt] = (-this.loc[dimcnt] / height);// multiply each axis length by the slope for that axis
       }
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Get_Steepest(PointNd steep) {// get the steepest line on a plane with respect to Z by rotating its normal 90 degrees.
       steep.Clear();
@@ -218,7 +230,9 @@ public class Things {
       }
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public interface Drawable {
 
@@ -231,15 +245,21 @@ public class Things {
 
     void Pass_Back_Corrector();
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class PlaneNd extends PointNd {
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public PlaneNd(int num_dims) {
       super(num_dims);
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public double Get_Height(PointNd pnt) {
       // get the height of this plane, at this point's coordinates
@@ -256,7 +276,9 @@ public class Things {
       height += plane_hgt;// add in the base offset
       return height;
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Plane_Ramp_To_Normal(PointNd norm) {// take the plane, and get the formula of the normal (x y z), with respect to z (or last dimension)
       for (int dimcnt = 0; dimcnt < ninputs; dimcnt++) {
@@ -267,8 +289,12 @@ public class Things {
     }
   }
 
-  /* *************************************************************************************************** */
-  public static class CPoint extends PointNd implements Drawable, Causal {/* Control Point */
+  /*
+   * ***************************************************************************************************
+   */
+  public static class CPoint extends PointNd implements Drawable, Causal {/*
+     * Control Point
+     */
 
 
     public CPoint[] US, DS;
@@ -277,7 +303,9 @@ public class Things {
     PointNd attractor;
     double radius, diameter;
     public NodeBox Parent;
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public CPoint(NodeBox NewParent, int num_dims) {
       super(num_dims);
@@ -291,7 +319,9 @@ public class Things {
       radius = 2.0;
       diameter = radius * 2.0;
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public double Get_Height() {
       return this.loc[this.ninputs];
@@ -317,17 +347,12 @@ public class Things {
       gr.drawRect((int) (screenloc.loc[0] - radius), (int) (screenloc.loc[1] - radius), (int) diameter, (int) diameter);
 
       /*
-      {
-      if (true) {
-      double factor = 100.0;
-      gr.setColor(Color.magenta); * draw the movement line *
-      gr.drawLine(
-      (int) (xorg + Bounds.Rad(0) * pnt.loc[0]),
-      (int) (yorg + Bounds.Rad(1) * pnt.loc[1]),
-      (int) (xorg + Bounds.Rad(0) * (pnt.loc[0] + pnt.delta[0] * factor)),
-      (int) (yorg + Bounds.Rad(1) * (pnt.loc[1] + pnt.delta[1] * factor)));
-      }
-      }
+       * {
+       * if (true) { double factor = 100.0; gr.setColor(Color.magenta); * draw
+       * the movement line * gr.drawLine( (int) (xorg + Bounds.Rad(0) *
+       * pnt.loc[0]), (int) (yorg + Bounds.Rad(1) * pnt.loc[1]), (int) (xorg +
+       * Bounds.Rad(0) * (pnt.loc[0] + pnt.delta[0] * factor)), (int) (yorg +
+       * Bounds.Rad(1) * (pnt.loc[1] + pnt.delta[1] * factor))); } }
        */
     }
 
@@ -339,11 +364,15 @@ public class Things {
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
         CPoint cpnt = this.US[pcnt];
         double infire = cpnt.Get_Outfire();
-        /* for my attraction point, make a vector of all the upstreamers outfire values. */
+        /*
+         * for my attraction point, make a vector of all the upstreamers outfire
+         * values.
+         */
         attractor.loc[pcnt] = infire;
         /*
-         * for sum outfire, mult each inlinks fire value by the tilt of our plane in that dimension. then add them.
-         * 
+         * for sum outfire, mult each inlinks fire value by the tilt of our
+         * plane in that dimension. then add them.
+         *
          */
         // more to go here
       }
@@ -352,7 +381,9 @@ public class Things {
     public void Pass_Back_Corrector() {
       NodeBox.Roto_Plane plane = this.Parent.planeform;
       //if (this.Parent.Num_Us > 0) {// hack
-        /* First generate the corrector */
+        /*
+       * First generate the corrector
+       */
       PointNd pdesire = new PointNd(this.ndims);
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
@@ -374,19 +405,20 @@ public class Things {
     }
 
     public void Apply_Corrector() {
-      if (false) {
+      if (this.DS.length > 0) {// hacky hack
         Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
       }
       // this is all wrong.  
       this.loc[ninputs] += Corrector;
-      compileboom();// fix all this junk.
+      //compileboom();// fix all this junk.
       /*
-       * things to change:
-       * only apply deriv when collecting correctors backward
+       * things to change: only apply deriv when collecting correctors backward
        */
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class CPoint_List extends ArrayList<CPoint> {
 
@@ -402,7 +434,9 @@ public class Things {
       }
       avg.Multiply(newsize);// experiment to move all the points to the centroid
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Get_Average(PointNd ret_avg) {
       ret_avg.Clear();
@@ -411,15 +445,21 @@ public class Things {
       }
       ret_avg.Multiply(1.0 / (double) this.size());
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void CheckNAN() {
       for (PointNd pnt : this) {
         pnt.CheckNAN();
       }
     }
-  }/* CPoint_List */
-  /* *************************************************************************************************** */
+  }/*
+   * CPoint_List
+   */
+  /*
+   * ***************************************************************************************************
+   */
 
 
   public static class NodeBox implements Drawable, Causal {
@@ -435,7 +475,9 @@ public class Things {
       CPoints = new CPoint_List(this, 0);
       planeform = new Roto_Plane(3);
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public static class Roto_Plane extends PlaneNd implements Drawable {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
@@ -443,11 +485,15 @@ public class Things {
       private PointNd pingvec;
       PointNd normal = null;
       PointNd desire = null;
-      /* These values below should come from NodeBox context! */
+      /*
+       * These values below should come from NodeBox context!
+       */
       int xorg, yorg;
       Bounder Bounds;
 
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
       public Roto_Plane(int num_dims) {
         super(num_dims);
         pingvec = new PointNd(ndims);
@@ -456,22 +502,28 @@ public class Things {
         //this.Randomize(-0.1, 0.1);
         this.loc[0] = 1.0;
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public double ActFun(double xin) {
         double OutVal;
         if (false) {
           return xin;
         } else {
-          OutVal = xin / Math.sqrt(1.0 + xin * xin);/* symmetrical sigmoid function in range -1.0 to 1.0. */
+          OutVal = xin / Math.sqrt(1.0 + xin * xin);/*
+           * symmetrical sigmoid function in range -1.0 to 1.0.
+           */
           return OutVal;
         }
         /*
-         * double power = 2.0;
-        OutVal = xin / Math.pow(1 + Math.abs(Math.pow(xin, power)), 1.0 / power);
+         * double power = 2.0; OutVal = xin / Math.pow(1 +
+         * Math.abs(Math.pow(xin, power)), 1.0 / power);
          */
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public double Reverse_ActFun(double xin) {
         double OutVal;// from http://www.quickmath.com/webMathematica3/quickmath/page.jsp?s1=equations&s2=solve&s3=basic
@@ -479,21 +531,31 @@ public class Things {
         OutVal = xin / (Math.sqrt(Math.abs(xin * xin - 1.0)));
         return OutVal;
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
-      public static double sigmoid_deriv(double Value) { /* modified for default return  -dbr */
-        /* Given the unit's activation value and sum of weighted inputs,
-         *  compute the derivative of the activation with respect to the sum.
-         *  Defined types are SIGMOID (-1 to +1) and ASYMSIGMOID (0 to +1).
-         * */
+      public static double sigmoid_deriv(double Value) { /*
+         * modified for default return -dbr
+         */
+        /*
+         * Given the unit's activation value and sum of weighted inputs, compute
+         * the derivative of the activation with respect to the sum. Defined
+         * types are SIGMOID (-1 to +1) and ASYMSIGMOID (0 to +1).
+         *
+         */
         Value = (Value + 1.0) / 2;
         double SigmoidPrimeOffset = 0.1;
-        /*  asymmetrical sigmoid function in range 0.0 to 1.0.  */
+        /*
+         * asymmetrical sigmoid function in range 0.0 to 1.0.
+         */
         double returnval = (SigmoidPrimeOffset + (Value * (1.0 - Value)));
         returnval *= 2.857142857142857;// modify to fit 1:1 slope of sigmooid
         return returnval * 1.0;
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public void Ping(PointNd pnt) {
         double phgt = pnt.loc[ninputs];
@@ -514,14 +576,18 @@ public class Things {
         pingvec.loc[ninputs] = 1.0;
         Train_Inlinks(pingvec, ndims, 0.01, corr);
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public double Get_Sigmoid_Height(PointNd pnt) {
         double hgt = this.Get_Height(pnt);
         hgt = this.ActFun(hgt);
         return hgt;
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public void Attract_Point(PointNd pnt, PointNd pdesire) {
         double shadow_hgt = this.Get_Height(pnt);// height on raw plane at this point's position.
@@ -542,7 +608,9 @@ public class Things {
         pdesire.loc[ninputs] *= vfactor;
         // double jitamp = 0.0001; pdesire.Jitter(-jitamp, jitamp);
       }
-      /* *************************************************************************************************** */
+      /*
+       * ***************************************************************************************************
+       */
 
       public void Train_Inlinks(PointNd invec, int ninputs_local, double lrate, double corrector) {
         double invec_squared = invec.Magnitude_Squared(ninputs_local);
@@ -554,8 +622,12 @@ public class Things {
           adj = adj * corrector * lrate;
           this.loc[cnt] += adj;
         }
-      }/* Train_Inlinks */
-      /* *************************************************************************************************** */
+      }/*
+       * Train_Inlinks
+       */
+      /*
+       * ***************************************************************************************************
+       */
 
 
       public void Draw_Me(TransForm tr, Graphics2D gr) {
@@ -565,7 +637,9 @@ public class Things {
       }
 
       public void Plot_Gradient(TransForm tr, Graphics2D g2) {
-        /* all about the gradient for display */
+        /*
+         * all about the gradient for display
+         */
         this.Plane_Ramp_To_Normal(normal);
         double hgt = this.loc[0];
         double grad_x0;
@@ -708,7 +782,9 @@ public class Things {
       }
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class Network implements Drawable, Causal {
 
@@ -718,7 +794,9 @@ public class Things {
     public Network() {
       Node_List = new ArrayList<NodeBox>();
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
       TransForm mytrans = new TransForm();
@@ -746,7 +824,9 @@ public class Things {
     }
 
     public void Connect_From_Other(Network other) {
-      /* Connect all-to-all between two meshes */
+      /*
+       * Connect all-to-all between two meshes
+       */
       int num_my_nodes = this.Node_List.size();
       int num_other_nodes = other.Node_List.size();
 
@@ -789,7 +869,9 @@ public class Things {
       }
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class Layers implements Drawable, Causal {
 
@@ -822,7 +904,9 @@ public class Things {
       Network net_last = this.Network_List.get(this.Network_List.size() - 1);
       net_last.Init_Xor();
     }
-    /* *************************************************************************************************** */
+    /*
+     * ***************************************************************************************************
+     */
 
     public void Draw_Me(TransForm tr, Graphics2D gr) {
 
@@ -876,7 +960,9 @@ public class Things {
       this.Apply_Corrector();
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class TransForm {
 
@@ -899,7 +985,9 @@ public class Things {
       yscale = parent.yscale * yscalep;
     }
   }
-  /* *************************************************************************************************** */
+  /*
+   * ***************************************************************************************************
+   */
 
   public static class Bounder {
 
@@ -949,24 +1037,23 @@ public class Things {
       return (minmax[1][dim] + minmax[0][dim]) / 2.0;
     }
   }
-  /* *************************************************************************************************** */
-  /* 
-   * cycle:
-  find cpoint vector of attraction to plane
-  tell upstreamer cpoint heights to go there, they adjust
-  upstreamer cpoint tells me to go there
-  find vector of attraction to plane again
-   * 
-   * 
-   * What next? 
-   * cpoints ping plane to bend it.
-   * cpoints pass back their desires.
+  /*
+   * ***************************************************************************************************
+   */
+  /*
+   * cycle: find cpoint vector of attraction to plane tell upstreamer cpoint
+   * heights to go there, they adjust upstreamer cpoint tells me to go there
+   * find vector of attraction to plane again
+   *
+   *
+   * What next? cpoints ping plane to bend it. cpoints pass back their desires.
    * when cpoints receive adjustment now, they must apply it to their heights.
-   * no fire forward yet.  when cpoints fire forward, the downstreamer must move its location to match heights of inputs.
-   * 
+   * no fire forward yet. when cpoints fire forward, the downstreamer must move
+   * its location to match heights of inputs.
+   *
    * repaint automatically.
-   * 
+   *
    * need to make special case for input nodes.
-   * 
+   *
    */
 }
