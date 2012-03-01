@@ -296,6 +296,7 @@ public class Things {
     /*
      * Control Point
      */
+
     int Num_Upstreamers = 0;
     public CPoint[] US, DS;
     public double OutFire;
@@ -320,7 +321,7 @@ public class Things {
       DS = new CPoint[2];
       radius = 2.0;
       diameter = radius * 2.0;
-      OutFire=0;
+      OutFire = 0;
     }
     /*
      * ***************************************************************************************************
@@ -379,9 +380,11 @@ public class Things {
          */
         // more to go here
       }
-      OutFire=this.loc[ninputs];
-      for (int cnt=0;cnt<ninputs;cnt++){
-        this.loc[cnt]=attractor.loc[cnt];
+      OutFire = this.loc[ninputs];
+
+      int Last_Upstreamer = Num_Upstreamers - 1;
+      for (int cnt = 0; cnt < Last_Upstreamer; cnt++) {
+        this.loc[cnt] = attractor.loc[cnt];
       }
     }
 
@@ -723,14 +726,15 @@ public class Things {
     public void Init_States(int num_states) {
       CPoint cpnt;
       double amp = 1.0;
-      double arbitrary_output=-0.5;
+      double arbitrary_output = -0.5;
       for (int pcnt = 0; pcnt < num_states; pcnt++) {
         cpnt = new CPoint(this, 3);
         cpnt.loc[0] = ((pcnt & 1) - 0.5) * amp;
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
+        //arbitrary_output = (Logic.wheel.nextDouble() * 2.0) - 1.0;
         cpnt.loc[2] = arbitrary_output;//cpnt.loc[0] + cpnt.loc[1];
         CPoints.add(cpnt);
-        arbitrary_output+=0.333;
+        arbitrary_output += 0.333;
       }
     }
 
