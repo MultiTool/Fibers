@@ -292,12 +292,13 @@ public class Things {
   /*
    * ***************************************************************************************************
    */
-  public static class CPoint extends PointNd implements Drawable, Causal {/*
+  public static class CPoint extends PointNd implements Drawable, Causal {
+    /*
      * Control Point
      */
-
-
+    int Num_Upstreamers = 0;
     public CPoint[] US, DS;
+    public double OutFire;
     public double Corrector;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
     PointNd attractor;
@@ -314,10 +315,12 @@ public class Things {
       for (int cnt = 0; cnt < num_dims; cnt++) {
         this.loc[cnt] = 0.5;
       }
+      Num_Upstreamers = 0;
       US = new CPoint[this.ninputs];
       DS = new CPoint[2];
       radius = 2.0;
       diameter = radius * 2.0;
+      OutFire=0;
     }
     /*
      * ***************************************************************************************************
@@ -360,7 +363,7 @@ public class Things {
       Corrector = 0.0;
       NodeBox.Roto_Plane plane = this.Parent.planeform;
       double SumFire = 0.0;
-      int Num_Upstreamers = US.length;
+      //Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
         CPoint cpnt = this.US[pcnt];
         double infire = cpnt.Get_Outfire();
@@ -375,6 +378,10 @@ public class Things {
          *
          */
         // more to go here
+      }
+      OutFire=this.loc[ninputs];
+      for (int cnt=0;cnt<ninputs;cnt++){
+        this.loc[cnt]=attractor.loc[cnt];
       }
     }
 
@@ -742,6 +749,7 @@ public class Things {
         CPoint my_cpnt = this.CPoints.get(pcnt);
         us_cpnt.DS[upstreamer.Num_Ds] = my_cpnt;
         my_cpnt.US[this.Num_Us] = us_cpnt;
+        my_cpnt.Num_Upstreamers++;
       }
       this.Num_Us++;
       upstreamer.Num_Ds++;
@@ -956,6 +964,7 @@ public class Things {
     }
 
     public void RunCycle() {
+      this.Collect_And_Fire();
       this.Pass_Back_Corrector();
       this.Apply_Corrector();
     }
