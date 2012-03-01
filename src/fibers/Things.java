@@ -723,12 +723,14 @@ public class Things {
     public void Init_States(int num_states) {
       CPoint cpnt;
       double amp = 1.0;
+      double arbitrary_output=-0.5;
       for (int pcnt = 0; pcnt < num_states; pcnt++) {
         cpnt = new CPoint(this, 3);
         cpnt.loc[0] = ((pcnt & 1) - 0.5) * amp;
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
-        cpnt.loc[2] = cpnt.loc[0] + cpnt.loc[1];
+        cpnt.loc[2] = arbitrary_output;//cpnt.loc[0] + cpnt.loc[1];
         CPoints.add(cpnt);
+        arbitrary_output+=0.333;
       }
     }
 
@@ -818,7 +820,7 @@ public class Things {
       for (int ncnt = 0; ncnt < num_nodes; ncnt++) {
         NodeBox nb = new NodeBox();
         nb.Init_States(4);// must rethink this
-        nb.xorg = (ncnt + 1.0) * 50.0;
+        nb.xorg = (ncnt + 1.0) * 70.0;
         Node_List.add(nb);
       }
     }
@@ -896,7 +898,7 @@ public class Things {
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
         Network net = new Network();
         net.Make_Layer(2);
-        net.yorg = lcnt * 50;
+        net.yorg = lcnt * 70.0;
         Network_List.add(net);
       }
 
