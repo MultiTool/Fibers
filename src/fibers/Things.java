@@ -292,13 +292,32 @@ public class Things {
   /*
    * ***************************************************************************************************
    */
+  public static class Link {
+
+    public CPoint US, DS;
+    public double FireVal, Corrector;
+
+    public Link() {
+    }
+
+    public Link(CPoint US0, CPoint DS0) {
+      US = US0;
+      DS = DS0;
+    }
+  }
+  /*
+   * ***************************************************************************************************
+   */
+
   public static class CPoint extends PointNd implements Drawable, Causal {
     /*
      * Control Point
      */
 
     int Num_Upstreamers = 0;
-    public CPoint[] US, DS;
+    int Num_Downstreamers = 0;
+    //public CPoint[] US, DS;
+    public Link[] US, DS;
     public double OutFire;
     public double Corrector;
     PointNd screenloc = new PointNd(2);// temporary but often-reused
@@ -317,8 +336,9 @@ public class Things {
         this.loc[cnt] = 0.5;
       }
       Num_Upstreamers = 0;
-      US = new CPoint[this.ninputs];
-      DS = new CPoint[2];
+      //US = new CPoint[this.ninputs]; DS = new CPoint[2];
+      US = new Link[this.ninputs];
+      DS = new Link[2];
       radius = 2.0;
       diameter = radius * 2.0;
       OutFire = 0;
@@ -366,7 +386,7 @@ public class Things {
       double SumFire = 0.0;
       //Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
-        CPoint cpnt = this.US[pcnt];
+        CPoint cpnt = this.US[pcnt].US;
         double infire = cpnt.Get_Outfire();
         /*
          * for my attraction point, make a vector of all the upstreamers outfire
@@ -397,7 +417,7 @@ public class Things {
       PointNd pdesire = new PointNd(this.ndims);
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
-        CPoint upstreamer = this.US[pcnt];
+        CPoint upstreamer = this.US[pcnt].US;
         try {
           upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
         } catch (Exception e) {
@@ -424,6 +444,14 @@ public class Things {
       /*
        * things to change: only apply deriv when collecting correctors backward
        */
+    }
+
+    public void ConnectIn(CPoint other) {
+      Link lnk = new Link(other, this);
+      US[this.Num_Upstreamers] = lnk;
+      this.Num_Upstreamers++;
+      other.DS[other.Num_Downstreamers] = lnk;
+      other.Num_Downstreamers++;
     }
   }
   /*
@@ -753,9 +781,8 @@ public class Things {
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
         CPoint us_cpnt = upstreamer.CPoints.get(pcnt);
         CPoint my_cpnt = this.CPoints.get(pcnt);
-        us_cpnt.DS[upstreamer.Num_Ds] = my_cpnt;
-        my_cpnt.US[this.Num_Us] = us_cpnt;
-        my_cpnt.Num_Upstreamers++;
+        my_cpnt.ConnectIn(us_cpnt);
+        // us_cpnt.DS[upstreamer.Num_Ds] = my_cpnt; my_cpnt.US[this.Num_Us] = us_cpnt; my_cpnt.Num_Upstreamers++;
       }
       this.Num_Us++;
       upstreamer.Num_Ds++;
