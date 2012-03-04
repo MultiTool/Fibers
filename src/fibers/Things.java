@@ -294,7 +294,7 @@ public class Things {
    */
   public static class Link {
 
-    public CPoint US, DS;
+    private CPoint US, DS;
     public double FireVal, Corrector;
 
     public Link() {
@@ -303,6 +303,10 @@ public class Things {
     public Link(CPoint US0, CPoint DS0) {
       US = US0;
       DS = DS0;
+    }
+    public double Get_Outfire() {
+      //return this.FireVal;
+      return this.US.Get_Outfire();
     }
   }
   /*
@@ -386,8 +390,9 @@ public class Things {
       double SumFire = 0.0;
       //Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
-        CPoint cpnt = this.US[pcnt].US;
-        double infire = cpnt.Get_Outfire();
+        //CPoint cpnt = this.US[pcnt].US;
+        //double infire = cpnt.Get_Outfire();
+        double infire = this.US[pcnt].Get_Outfire();
         /*
          * for my attraction point, make a vector of all the upstreamers outfire
          * values.
