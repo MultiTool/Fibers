@@ -351,19 +351,20 @@ public class Things {
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
         CPoint upstreamer = this.US[pcnt].US;
-        try {
-          upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
-        } catch (Exception e) {
-          boolean nop = true;
-        }
+        this.US[pcnt].Corrector = pdesire.loc[pcnt];
+        upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
       }
       //}
     }
+    public void Gather_Correctors() {
+      Corrector = 0.0;
+      for (int pcnt = 0; pcnt < this.Num_Downstreamers; pcnt++) {
+        Corrector += this.DS[pcnt].Corrector;
+      }
+      Apply_Corrector();
+    }
     public void Gather_Corrector(double goal) {
       Corrector += goal;
-      if (Corrector != 0.0) {
-        boolean nop = true;
-      }
     }
     public void Apply_Corrector() {
       if (this.DS.length > 0) {// hacky hack
@@ -447,8 +448,6 @@ public class Things {
        * These values below should come from NodeBox context!
        */
       int xorg, yorg;
-      Bounder Bounds;
-
       /*
        * ***************************************************************************************************
        */
@@ -634,10 +633,6 @@ public class Things {
           g2.fillRect(rxorg, ryorg, rwdt, rhgt);
           g2.setColor(Color.white);
           g2.drawLine((int) (tr.xoffs + grad_x0), (int) (tr.yoffs + grad_y0), (int) (tr.xoffs + grad_x1), (int) (tr.yoffs + grad_y1));
-        } else {
-          g2.fillRect(xorg + (int) Bounds.minmax[0][0], yorg + (int) Bounds.minmax[0][1], (int) Bounds.Wdt(), (int) Bounds.Hgt());
-          g2.setColor(Color.white);
-          g2.drawLine(xorg + (int) grad_x0, yorg + (int) grad_y0, xorg + (int) grad_x1, yorg + (int) grad_y1);
         }
       }
     }
@@ -700,6 +695,15 @@ public class Things {
       for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
         CPoint cpnt = this.CPoints.get(pcnt);
         cpnt.Collect_And_Fire();
+      }
+    }
+    public void Gather_Correctors() {
+      if (this.Num_Us > 0) {// hack
+        int Num_CPoints = this.CPoints.size();
+        for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
+          CPoint cpnt = this.CPoints.get(pcnt);
+          cpnt.Gather_Correctors();
+        }
       }
     }
     public void Pass_Back_Corrector() {
@@ -910,46 +914,6 @@ public class Things {
   /*
    * ***************************************************************************************************
    */
-  public static class Bounder {
-    double[][] minmax;// = new double[2][ndims];
-    public Bounder(double rad, int ndims) {
-      minmax = new double[2][ndims];
-      for (int dcnt = 0; dcnt < ndims; dcnt++) {
-        this.minmax[0][dcnt] = -rad; //dimension min
-        this.minmax[1][dcnt] = rad; //dimension max        
-      }
-    }
-    public double Wdt() {
-      return minmax[1][0] - minmax[0][0];
-    }
-    public double Hgt() {
-      return minmax[1][1] - minmax[0][1];
-    }
-    public double Dep() {
-      return minmax[1][2] - minmax[0][2];
-    }
-    public double Sz(int dim) {
-      return minmax[1][dim] - minmax[0][dim];
-    }
-    public double Rad(int dim) {
-      return Sz(dim) / 2.0;
-    }
-    public double CtrX() {
-      return (minmax[1][0] + minmax[0][0]) / 2.0;
-    }
-    public double CtrY() {
-      return (minmax[1][1] + minmax[0][1]) / 2.0;
-    }
-    public double CtrZ() {
-      return (minmax[1][2] + minmax[0][2]) / 2.0;
-    }
-    public double Ctr(int dim) {
-      return (minmax[1][dim] + minmax[0][dim]) / 2.0;
-    }
-  }
-  /*
-   * ***************************************************************************************************
-   */
   /*
    * cycle: find cpoint vector of attraction to plane tell upstreamer cpoint
    * heights to go there, they adjust upstreamer cpoint tells me to go there
@@ -965,5 +929,18 @@ public class Things {
    *
    * need to make special case for input nodes.
    *
+   * collect and fire to nowfire (all)
+   * for all {
+   *   calc desire 
+   *   pass back desire (to links)
+   * }
+   * for all {
+   *   collect desire from links
+   *   apply desire to my prevfire
+   *   push nowfire to links, set prevfire to nowfire.
+   * }
+   * 
+   * each node only has a nowfire.  prev fire is stored in links.
+   * 
    */
 }
