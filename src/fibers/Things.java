@@ -657,6 +657,7 @@ public class Things {
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
         //arbitrary_output = (Logic.wheel.nextDouble() * 2.0) - 1.0;
         cpnt.loc[2] = arbitrary_output;//cpnt.loc[0] + cpnt.loc[1];
+        cpnt.Randomize(-1.0, 1.0);
         CPoints.add(cpnt);
         arbitrary_output += 0.333;
       }
