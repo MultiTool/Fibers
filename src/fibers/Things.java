@@ -350,9 +350,8 @@ public class Things {
       PointNd pdesire = new PointNd(this.ndims);
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
-        CPoint upstreamer = this.US[pcnt].US;
-        this.US[pcnt].Corrector = pdesire.loc[pcnt];
-        upstreamer.Gather_Corrector(pdesire.loc[pcnt]);
+        Link lnk = this.US[pcnt];
+        lnk.Corrector = pdesire.loc[pcnt];
       }
       //}
     }
@@ -363,19 +362,12 @@ public class Things {
       }
       Apply_Corrector();
     }
-    public void Gather_Corrector(double goal) {
-      Corrector += goal;
-    }
     public void Apply_Corrector() {
-      if (this.DS.length > 0) {// hacky hack
+      if (this.Num_Downstreamers > 0) {// hacky hack
         Corrector *= NodeBox.Roto_Plane.sigmoid_deriv(this.loc[ninputs]);
       }
       // this is all wrong.  
       this.loc[ninputs] += Corrector;
-      //compileboom();// fix all this junk.
-      /*
-       * things to change: only apply deriv when collecting correctors backward
-       */
     }
     public void ConnectIn(CPoint other) {
       Link lnk = new Link(other, this);
@@ -698,7 +690,7 @@ public class Things {
       }
     }
     public void Gather_Correctors() {
-      if (this.Num_Us > 0) {// hack
+      if (this.Num_Ds > 0) {// hack
         int Num_CPoints = this.CPoints.size();
         for (int pcnt = 0; pcnt < Num_CPoints; pcnt++) {
           CPoint cpnt = this.CPoints.get(pcnt);
@@ -803,6 +795,7 @@ public class Things {
       int num_my_nodes = this.Node_List.size();
       for (int ncnt1 = 0; ncnt1 < num_my_nodes; ncnt1++) {
         NodeBox nb = this.Node_List.get(ncnt1);
+        nb.Gather_Correctors();
         nb.Apply_Corrector();
       }
     }
@@ -888,6 +881,20 @@ public class Things {
       this.Collect_And_Fire();
       this.Pass_Back_Corrector();
       this.Apply_Corrector();
+      /* collect and fire to nowfire (all)
+       * for all {
+       *   calc desire 
+       *   pass back desire (to links)
+       * }
+       * for all {
+       *   collect desire from links
+       *   apply desire to my prevfire
+       *   push nowfire to links, set prevfire to nowfire.
+       * }
+       * 
+       * each node only has a nowfire.  prev fire is stored in links.
+       * 
+       */
     }
   }
   /*
