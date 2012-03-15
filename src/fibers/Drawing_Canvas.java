@@ -23,7 +23,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     onShutdown();
     this.setBackground(Color.red);
     lay = new Things.Layers();
-    lay.Make_Layers(3);
+    lay.Make_Layers(20);
   }
 
   /* *************************************************************************************************** */

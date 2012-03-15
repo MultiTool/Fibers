@@ -280,9 +280,7 @@ public class Things {
       diameter = radius * 2.0;
       OutFire = 0;
     }
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public double Get_Height() {
       return this.loc[this.ninputs];
     }
@@ -377,9 +375,7 @@ public class Things {
       other.Num_Downstreamers++;
     }
   }
-  /*
-   * ***************************************************************************************************
-   */
+  /* *************************************************************************************************** */
   public static class CPoint_List extends ArrayList<CPoint> {
     public NodeBox Parent;
     public CPoint_List(NodeBox NewParent, int newsize) {
@@ -657,7 +653,7 @@ public class Things {
         cpnt.loc[1] = (((pcnt >> 1) & 1) - 0.5) * amp;
         //arbitrary_output = (Logic.wheel.nextDouble() * 2.0) - 1.0;
         cpnt.loc[2] = arbitrary_output;//cpnt.loc[0] + cpnt.loc[1];
-        cpnt.Randomize(-1.0, 1.0);
+        //cpnt.Randomize(-1.0, 1.0);
         CPoints.add(cpnt);
         arbitrary_output += 0.333;
       }
@@ -809,8 +805,8 @@ public class Things {
     public double xorg, yorg;
     public Layers() {
       Network_List = new ArrayList<Network>();
-      xorg = 100;
-      yorg = 100;
+      xorg = 50;
+      yorg = 50;
     }
     public void Make_Layers(int num_layers) {
       for (int lcnt = 0; lcnt < num_layers; lcnt++) {
@@ -832,11 +828,8 @@ public class Things {
       Network net_last = this.Network_List.get(this.Network_List.size() - 1);
       net_last.Init_Xor();
     }
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public void Draw_Me(TransForm tr, Graphics2D gr) {
-
       TransForm mytrans = new TransForm();
       mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
 
