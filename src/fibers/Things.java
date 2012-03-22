@@ -220,7 +220,7 @@ public class Things {
       for (int dim = 0; dim < ninputs; dim++) {
         height += (pnt.loc[dim] * this.loc[dim]);// multiply each axis length by the slope for that axis
       }
-      height += plane_hgt;// add in the base offset
+      //height += plane_hgt;// add in the base offset
       return height;
     }
     /* *************************************************************************************************** */
@@ -506,10 +506,10 @@ public class Things {
         result = this.ActFun(result);
         // corrector is the distance from the sigmoid plane TOWARD this point's height
         double corr = phgt - result;
-
+/*
         double bell = Roto_Plane.sigmoid_deriv(phgt);// sigmoid derivative is a bell curve 
         corr *= bell;
-
+*/
         // now create the recognition vector, based on this pnt's position, and 1.0 * this plane's height offset dimension
         for (int cnt = 0; cnt < ninputs; cnt++) {
           pingvec.loc[cnt] = pnt.loc[cnt];
