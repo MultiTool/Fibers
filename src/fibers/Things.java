@@ -311,12 +311,8 @@ public class Things {
     }
     public void Collect_And_Fire() {
       Corrector = 0.0;
-      NodeBox.Roto_Plane plane = this.Parent.planeform;
       double SumFire = 0.0;
-      //Num_Upstreamers = US.length;
       for (int pcnt = 0; pcnt < Num_Upstreamers; pcnt++) {
-        //CPoint cpnt = this.US[pcnt].US;
-        //double infire = cpnt.Get_Outfire();
         double infire = this.US[pcnt].Get_Outfire();
         /*
          * for my attraction point, make a vector of all the upstreamers outfire
@@ -338,9 +334,7 @@ public class Things {
     public void Pass_Back_Corrector() {
       NodeBox.Roto_Plane plane = this.Parent.planeform;
       //if (this.Parent.Num_Us > 0) {// hack
-        /*
-       * First generate the corrector
-       */
+      /* First generate the corrector */
       PointNd pdesire = new PointNd(this.ndims);
       plane.Attract_Point(this, pdesire);
       for (int pcnt = 0; pcnt < this.ninputs; pcnt++) {
@@ -486,7 +480,9 @@ public class Things {
           pingvec.loc[cnt] = pnt.loc[cnt];
         }
         pingvec.loc[ninputs] = 1.0;
-        Train_Inlinks(pingvec, ndims, 0.01, corr);
+        double lrate = 0.01;
+        lrate = 0.2;
+        Train_Inlinks(pingvec, ndims, lrate, corr);
       }
       /* *************************************************************************************************** */
       public double Get_Sigmoid_Height(PointNd pnt) {
