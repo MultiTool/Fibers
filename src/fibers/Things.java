@@ -262,9 +262,7 @@ public class Things {
     PointNd attractor;
     double radius, diameter;
     public NodeBox Parent;
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public CPoint(NodeBox NewParent, int num_dims) {
       super(num_dims);
       attractor = new PointNd(num_dims);
@@ -333,9 +331,7 @@ public class Things {
         // more to go here
       }
       OutFire = this.loc[ninputs];
-
-      int Last_Upstreamer = Num_Upstreamers - 1;
-      for (int cnt = 0; cnt < Last_Upstreamer; cnt++) {
+      for (int cnt = 0; cnt < Num_Upstreamers; cnt++) {
         this.loc[cnt] = attractor.loc[cnt];
       }
     }
@@ -388,9 +384,7 @@ public class Things {
       }
       avg.Multiply(newsize);// experiment to move all the points to the centroid
     }
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public void Get_Average(PointNd ret_avg) {
       ret_avg.Clear();
       for (PointNd pnt : this) {
@@ -398,21 +392,14 @@ public class Things {
       }
       ret_avg.Multiply(1.0 / (double) this.size());
     }
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public void CheckNAN() {
       for (PointNd pnt : this) {
         pnt.CheckNAN();
       }
     }
-  }/*
-   * CPoint_List
-   */
-  /*
-   * ***************************************************************************************************
-   */
-
+  }/* CPoint_List */
+  /* *************************************************************************************************** */
   public static class NodeBox implements Drawable, Causal {
     public CPoint_List CPoints;
     public int Num_Us, Num_Ds;
@@ -424,9 +411,7 @@ public class Things {
       CPoints = new CPoint_List(this, 0);
       planeform = new Roto_Plane(3);
     }
-    /*
-     * ***************************************************************************************************
-     */
+    /* *************************************************************************************************** */
     public static class Roto_Plane extends PlaneNd implements Drawable {
       // the purpose of this class is to represent a sigmoid plane, to fit it to points, and to fit points to it.
       private PointNd pingvec;
@@ -436,20 +421,16 @@ public class Things {
        * These values below should come from NodeBox context!
        */
       int xorg, yorg;
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public Roto_Plane(int num_dims) {
         super(num_dims);
         pingvec = new PointNd(ndims);
         normal = new PointNd(ndims);
         desire = new PointNd(ndims);
-        //this.Randomize(-0.1, 0.1);
+        this.Randomize(-0.1, 0.1);
         this.loc[0] = 1.0;
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public double ActFun(double xin) {
         double OutVal;
         if (false) {
@@ -465,18 +446,14 @@ public class Things {
          * Math.abs(Math.pow(xin, power)), 1.0 / power);
          */
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public double Reverse_ActFun(double xin) {
         double OutVal;// from http://www.quickmath.com/webMathematica3/quickmath/page.jsp?s1=equations&s2=solve&s3=basic
         // reverse, inverse of sigmoid is:
         OutVal = xin / (Math.sqrt(Math.abs(xin * xin - 1.0)));
         return OutVal;
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public static double sigmoid_deriv(double Value) { /*
          * modified for default return -dbr
          */
@@ -495,21 +472,15 @@ public class Things {
         returnval *= 2.857142857142857;// modify to fit 1:1 slope of sigmooid
         return returnval * 1.0;
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public void Ping(PointNd pnt) {
         double phgt = pnt.loc[ninputs];
         // first get the height of the plane at this loc,
         double result;
-        result = this.Get_Height(pnt);
-        result = this.ActFun(result);
+        result = this.Get_Height(pnt);// get height of plane at location of this point
+        result = this.ActFun(result);// sigmoidify it
         // corrector is the distance from the sigmoid plane TOWARD this point's height
         double corr = phgt - result;
-/*
-        double bell = Roto_Plane.sigmoid_deriv(phgt);// sigmoid derivative is a bell curve 
-        corr *= bell;
-*/
         // now create the recognition vector, based on this pnt's position, and 1.0 * this plane's height offset dimension
         for (int cnt = 0; cnt < ninputs; cnt++) {
           pingvec.loc[cnt] = pnt.loc[cnt];
@@ -517,17 +488,13 @@ public class Things {
         pingvec.loc[ninputs] = 1.0;
         Train_Inlinks(pingvec, ndims, 0.01, corr);
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public double Get_Sigmoid_Height(PointNd pnt) {
         double hgt = this.Get_Height(pnt);
         hgt = this.ActFun(hgt);
         return hgt;
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public void Attract_Point(PointNd pnt, PointNd pdesire) {
         double shadow_hgt = this.Get_Height(pnt);// height on raw plane at this point's position.
         double sigmoid_shadow_hgt = this.ActFun(shadow_hgt);// height on sigmoid plane at this point's position.
@@ -547,9 +514,7 @@ public class Things {
         pdesire.loc[ninputs] *= vfactor;
         // double jitamp = 0.0001; pdesire.Jitter(-jitamp, jitamp);
       }
-      /*
-       * ***************************************************************************************************
-       */
+      /* *************************************************************************************************** */
       public void Train_Inlinks(PointNd invec, int ninputs_local, double lrate, double corrector) {
         double invec_squared = invec.Magnitude_Squared(ninputs_local);
         if (invec_squared == 0.0) {
@@ -560,22 +525,15 @@ public class Things {
           adj = adj * corrector * lrate;
           this.loc[cnt] += adj;
         }
-      }/*
-       * Train_Inlinks
-       */
-      /*
-       * ***************************************************************************************************
-       */
-
+      }/* Train_Inlinks */
+      /* *************************************************************************************************** */
       public void Draw_Me(TransForm tr, Graphics2D gr) {
         TransForm mytrans = new TransForm();
         mytrans.Accumulate(tr, this.xorg, this.yorg, 1.0, 1.0);
         Plot_Gradient(tr, gr);
       }
       public void Plot_Gradient(TransForm tr, Graphics2D g2) {
-        /*
-         * all about the gradient for display
-         */
+        /* all about the gradient for display */
         this.Plane_Ramp_To_Normal(normal);
         double hgt = this.loc[0];
         double grad_x0;
