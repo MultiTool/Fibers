@@ -85,7 +85,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
       lay.RunCycle();
       System.out.println(nop);
       try{
-        Thread.sleep(1);
+        Thread.sleep(20);
       }catch(Exception ex){
         System.out.println("Sleep crash!");
       }
