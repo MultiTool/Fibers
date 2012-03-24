@@ -23,7 +23,9 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
     onShutdown();
     this.setBackground(Color.red);
     lay = new Things.Layers();
-    lay.Make_Layers(20);
+    lay.Make_Layers(32);
+    //lay.Make_Layers(16);
+    //lay.Make_Layers(8);
   }
 
   /* *************************************************************************************************** */
@@ -85,7 +87,7 @@ public class Drawing_Canvas extends javax.swing.JPanel implements Runnable {
       lay.RunCycle();
       System.out.println(nop);
       try{
-        Thread.sleep(20);
+        Thread.sleep(0);
       }catch(Exception ex){
         System.out.println("Sleep crash!");
       }

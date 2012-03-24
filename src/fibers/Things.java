@@ -479,9 +479,9 @@ public class Things {
         for (int cnt = 0; cnt < ninputs; cnt++) {
           pingvec.loc[cnt] = pnt.loc[cnt];
         }
-        pingvec.loc[ninputs] = 1.0;
+        pingvec.loc[ninputs] = pnt.loc[ninputs];// 1.0;
         double lrate = 0.01;
-        lrate = 0.2;
+        lrate = 0.02;
         Train_Inlinks(pingvec, ndims, lrate, corr);
       }
       /* *************************************************************************************************** */

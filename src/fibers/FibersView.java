@@ -101,6 +101,10 @@ public class FibersView extends FrameView {
         }
       }
     });
+    
+    this.getFrame().setSize(1000, 800);
+    this.getFrame().setLocation(10, 10);
+    this.getFrame().show(); 
   }
 
   @Action
